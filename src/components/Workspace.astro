@@ -44,7 +44,7 @@ import { ads } from '../config/ads';
 
     {ads.placements.middle && <AdSlot variant="middle" />}
 
-    <div class="splitter" data-role="splitter" title="Drag left or right to change the width of the panels">
+    <div class="splitter" data-role="splitter" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Resize panels" aria-valuemin="15" aria-valuemax="85" aria-valuenow="50" title="Drag left or right to change the width of the panels">
       <span class="splitter-dots" aria-hidden="true"><i></i><i></i><i></i></span>
     </div>
   </div>
@@ -599,6 +599,15 @@ import { ads } from '../config/ads';
   function applySplit(): void {
     if (!workspace) return;
     workspace.style.gridTemplateColumns = `${leftPct}fr var(--middle-width) ${100 - leftPct}fr`;
+    splitter?.setAttribute('aria-valuenow', String(Math.round(leftPct)));
+  }
+
+  function persistSplit(): void {
+    try {
+      localStorage.setItem(SPLITTER_KEY, String(leftPct));
+    } catch {
+      /* storage unavailable */
+    }
   }
 
   if (splitter && workspace) {
@@ -617,16 +626,41 @@ import { ads } from '../config/ads';
     splitter.addEventListener('pointerup', () => {
       if (!dragging) return;
       dragging = false;
-      try {
-        localStorage.setItem(SPLITTER_KEY, String(leftPct));
-      } catch {
-        /* storage unavailable */
-      }
+      persistSplit();
+    });
+    splitter.addEventListener('keydown', (event) => {
+      const step = event.shiftKey ? 10 : 2;
+      let next: number | undefined;
+      if (event.key === 'ArrowLeft') next = leftPct - step;
+      else if (event.key === 'ArrowRight') next = leftPct + step;
+      else if (event.key === 'Home') next = 15;
+      else if (event.key === 'End') next = 85;
+      else return;
+      event.preventDefault();
+      leftPct = clampSplitter(next);
+      applySplit();
+      persistSplit();
     });
     applySplit();
   }
 
   // ------------------------------------------------------- event delegation
+
+  // Arrow keys move between a panel's mode tabs (automatic activation).
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+    const target = event.target as Element | null;
+    const tab = target?.closest<HTMLElement>('.mode-tab');
+    const panel = tab?.dataset.panel;
+    if (!tab || (panel !== 'left' && panel !== 'right')) return;
+    event.preventDefault();
+    const tabs = [
+      ...document.querySelectorAll<HTMLElement>(`[data-panel="${panel}"] .mode-tab`),
+    ];
+    const next = tabs[(tabs.indexOf(tab) + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length];
+    next?.focus();
+    if (next?.dataset.mode) setMode(panel, next.dataset.mode);
+  });
 
   document.addEventListener('click', (event) => {
     const target = event.target as Element | null;

@@ -2,6 +2,7 @@ packages:
   - '.'
 
 allowBuilds:
+  '@parcel/watcher': false
   esbuild: false
   sharp: true
   workerd: false

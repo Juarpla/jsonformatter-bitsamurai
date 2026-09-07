@@ -1,11 +1,45 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Navbar from '../components/Navbar.astro';
+import Workspace from '../components/Workspace.astro';
+import AdSlot from '../components/AdSlot.astro';
+import { ads } from '../config/ads';
 ---
 
 <Layout>
-	<Welcome />
+  <div class="page">
+    <Navbar />
+    {ads.placements['top-leaderboard'] && <AdSlot variant="top-leaderboard" />}
+    <main class="workspace-area">
+      <Workspace />
+    </main>
+    {ads.placements.footer && <AdSlot variant="footer" />}
+    {ads.placements.sidebar && <AdSlot variant="sidebar" />}
+  </div>
 </Layout>
+
+<style>
+  .page {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+  }
+
+  .workspace-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  /* Reserve a right rail when the sidebar ad is enabled */
+  .page:has(.ad-sidebar) {
+    padding-right: 176px;
+  }
+
+  @media (max-width: 1599px) {
+    .page:has(.ad-sidebar) {
+      padding-right: 0;
+    }
+  }
+</style>

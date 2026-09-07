@@ -1,0 +1,194 @@
+---
+import Menu from './Menu.astro';
+---
+
+<header class="navbar">
+  <a class="brand" href="/"><strong>JSON Formatter</strong>&nbsp;<span>Online</span></a>
+
+  <nav class="navbar-actions" aria-label="Application">
+    <Menu align="right">
+      <Fragment slot="trigger">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span class="nav-label">Settings</span>
+        <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+      </Fragment>
+
+      <div class="menu-label">Theme</div>
+      <button class="menu-item" type="button" role="menuitemradio" data-theme-choice="system" data-keep-open aria-checked="true">
+        <svg class="menu-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor" stroke="none"></path></svg>
+        Browser default
+      </button>
+      <button class="menu-item" type="button" role="menuitemradio" data-theme-choice="light" data-keep-open aria-checked="false">
+        <svg class="menu-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+        Light
+      </button>
+      <button class="menu-item" type="button" role="menuitemradio" data-theme-choice="dark" data-keep-open aria-checked="false">
+        <svg class="menu-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+        Dark
+      </button>
+
+      <div class="menu-label">Theme color</div>
+      <button class="menu-item" type="button" role="menuitemradio" data-accent-choice="green" data-keep-open aria-checked="true">
+        <span class="accent-dot" style="--dot: #5c7a1e;"></span>
+        Green (default)
+      </button>
+      <button class="menu-item" type="button" role="menuitemradio" data-accent-choice="blue" data-keep-open aria-checked="false">
+        <span class="accent-dot" style="--dot: #007aff;"></span>
+        Blue
+      </button>
+      <button class="menu-item" type="button" role="menuitemradio" data-accent-choice="red" data-keep-open aria-checked="false">
+        <span class="accent-dot" style="--dot: #ff3b30;"></span>
+        Red
+      </button>
+
+      <hr class="menu-separator" />
+      <button class="menu-item" type="button" role="menuitem" disabled title="Coming soon">Configure editor</button>
+    </Menu>
+
+    <Menu align="right" class="help-menu">
+      <Fragment slot="trigger">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg>
+        <span class="nav-label">Help</span>
+        <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+      </Fragment>
+      <div class="menu-label">Keyboard shortcuts</div>
+      <span class="menu-item help-line"><span>Undo</span><kbd>Ctrl+Z</kbd></span>
+      <span class="menu-item help-line"><span>Redo</span><kbd>Ctrl+Shift+Z</kbd></span>
+      <span class="menu-item help-line"><span>Search</span><kbd>Ctrl+F</kbd></span>
+      <span class="menu-item help-line"><span>Format</span><kbd>Ctrl+Shift+F</kbd></span>
+    </Menu>
+  </nav>
+</header>
+
+<style>
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: var(--navbar-height);
+    padding: 0 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--separator);
+  }
+
+  .brand {
+    color: var(--on-surface);
+    text-decoration: none;
+    font-size: 22px; /* title-2 */
+    line-height: 28px;
+    white-space: nowrap;
+  }
+
+  .brand strong {
+    font-weight: 600;
+  }
+
+  .brand span {
+    color: var(--on-surface-secondary);
+    font-weight: 400;
+  }
+
+  .navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .navbar-actions .menu-trigger {
+    color: var(--on-surface);
+    font-size: 17px; /* body */
+    border-radius: var(--radius-sm);
+    padding: 0 12px;
+  }
+
+  .navbar-actions .menu-trigger:hover {
+    background: var(--surface-secondary);
+  }
+
+  .nav-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .nav-chevron {
+    width: 14px;
+    height: 14px;
+    color: var(--on-surface-secondary);
+  }
+
+  .help-line {
+    cursor: default;
+    justify-content: space-between;
+    font-family: var(--font-sans);
+  }
+
+  .help-line:hover {
+    background: transparent;
+  }
+
+  .help-line kbd {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--on-surface-secondary);
+    background: var(--surface-secondary);
+    border: 1px solid var(--separator);
+    border-radius: var(--radius-sm);
+    padding: 2px 6px;
+  }
+
+  @media (max-width: 767px) {
+    .nav-label,
+    .brand span {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import {
+    persistTheme,
+    persistAccent,
+    currentThemeSetting,
+    currentAccentSetting,
+    announceAppearance,
+    type ThemeSetting,
+    type AccentSetting,
+  } from '../scripts/appearance';
+
+  function syncChecked(): void {
+    const theme = currentThemeSetting();
+    const accent = currentAccentSetting();
+    document.querySelectorAll<HTMLElement>('[data-theme-choice]').forEach((el) => {
+      el.setAttribute('aria-checked', String(el.dataset.themeChoice === theme));
+    });
+    document.querySelectorAll<HTMLElement>('[data-accent-choice]').forEach((el) => {
+      el.setAttribute('aria-checked', String(el.dataset.accentChoice === accent));
+    });
+  }
+
+  document.addEventListener('click', (event) => {
+    const target = event.target as Element | null;
+    if (!target) return;
+
+    const themeChoice = target.closest<HTMLElement>('[data-theme-choice]');
+    if (themeChoice?.dataset.themeChoice) {
+      persistTheme(themeChoice.dataset.themeChoice as ThemeSetting);
+      syncChecked();
+      announceAppearance();
+      return;
+    }
+
+    const accentChoice = target.closest<HTMLElement>('[data-accent-choice]');
+    if (accentChoice?.dataset.accentChoice) {
+      persistAccent(accentChoice.dataset.accentChoice as AccentSetting);
+      syncChecked();
+      announceAppearance();
+    }
+  });
+
+  syncChecked();
+</script>

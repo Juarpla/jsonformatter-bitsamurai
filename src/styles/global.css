@@ -1,0 +1,355 @@
+/* global.css — design tokens + base styles.
+   Normative source: DESIGN.md (Google DESIGN.md spec). Do not hardcode
+   values here or in components; always reference these tokens. */
+
+:root {
+  /* Accent — default Green. Overridden by html[data-accent='blue'|'red']. */
+  --accent: #5c7a1e;
+  --accent-contrast: #ffffff;
+  --accent-soft: rgba(92, 122, 30, 0.14);
+
+  /* HIG semantic colors — light appearance (canonical). */
+  --background: #f2f2f7;
+  --surface: #ffffff;
+  --surface-secondary: #f2f2f7;
+  --on-surface: #000000;
+  --on-surface-secondary: rgba(60, 60, 67, 0.6);
+  --on-surface-tertiary: rgba(60, 60, 67, 0.3);
+  --separator: rgba(60, 60, 67, 0.29);
+  --link: #007aff;
+  --success: #34c759;
+  --warning: #ff9500;
+  --error: #ff3b30;
+
+  /* Typography stacks (SF Pro / SF Mono via system fonts). */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+    'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas,
+    'Liberation Mono', monospace;
+
+  /* Dimensions (DESIGN.md → Layout / Shapes). */
+  --navbar-height: 52px;
+  --toolbar-height: 44px;
+  --statusbar-height: 24px;
+  --middle-width: 200px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --shadow-menu: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Dark appearance — explicit user choice. */
+:root[data-theme='dark'] {
+  --background: #000000;
+  --surface: #1c1c1e;
+  --surface-secondary: #2c2c2e;
+  --on-surface: #ffffff;
+  --on-surface-secondary: rgba(235, 235, 245, 0.6);
+  --on-surface-tertiary: rgba(235, 235, 245, 0.3);
+  --separator: rgba(84, 84, 88, 0.6);
+  --link: #0984ff;
+  --success: #30d158;
+  --warning: #ff9f0a;
+  --error: #ff453a;
+  --shadow-menu: 0 6px 24px rgba(0, 0, 0, 0.55);
+}
+
+/* Dark appearance — "Browser default" follows the OS. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --background: #000000;
+    --surface: #1c1c1e;
+    --surface-secondary: #2c2c2e;
+    --on-surface: #ffffff;
+    --on-surface-secondary: rgba(235, 235, 245, 0.6);
+    --on-surface-tertiary: rgba(235, 235, 245, 0.3);
+    --separator: rgba(84, 84, 88, 0.6);
+    --link: #0984ff;
+    --success: #30d158;
+    --warning: #ff9f0a;
+    --error: #ff453a;
+    --shadow-menu: 0 6px 24px rgba(0, 0, 0, 0.55);
+  }
+}
+
+/* Accent variants. Green works in both appearances (chrome color). */
+:root[data-accent='blue'] {
+  --accent: #007aff;
+  --accent-soft: rgba(0, 122, 255, 0.14);
+}
+:root[data-accent='red'] {
+  --accent: #ff3b30;
+  --accent-soft: rgba(255, 59, 48, 0.14);
+}
+
+/* Base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 17px; /* DESIGN.md → body */
+  line-height: 1.29;
+  color: var(--on-surface);
+  background: var(--background);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+input {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--link);
+}
+
+:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Shared menu (dropdown) primitives ---------- */
+
+.menu {
+  position: relative;
+}
+
+.menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--tap-target, 44px);
+  padding: 0 8px;
+  white-space: nowrap;
+}
+
+.menu-panel {
+  position: absolute;
+  top: calc(100% - 2px);
+  z-index: 1000;
+  min-width: 220px;
+  padding: 8px 0;
+  background: var(--surface);
+  color: var(--on-surface);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-menu);
+}
+
+.menu[data-align='left'] .menu-panel {
+  left: 0;
+}
+
+.menu[data-align='right'] .menu-panel {
+  left: auto;
+  right: 0;
+}
+
+.menu-label {
+  padding: 8px 16px 4px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--on-surface-tertiary);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 16px;
+  font-size: 16px; /* callout */
+  line-height: 21px;
+  color: var(--on-surface);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.menu-item:hover {
+  background: var(--surface-secondary);
+}
+
+.menu-item[aria-checked='true'] {
+  font-weight: 600;
+}
+
+.menu-item:disabled {
+  color: var(--on-surface-tertiary);
+  cursor: default;
+}
+
+.menu-item:disabled:hover {
+  background: transparent;
+}
+
+.menu-item .menu-item-icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: var(--on-surface-secondary);
+}
+
+.menu-separator {
+  margin: 8px 0;
+  border: 0;
+  border-top: 1px solid var(--separator);
+}
+
+.accent-dot {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--dot, transparent);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+/* ---------- Ad slots (chrome, never content) ---------- */
+
+.ad-slot {
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ad-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 1px dashed var(--separator);
+  border-radius: var(--radius-sm);
+  color: var(--on-surface-tertiary);
+  font-size: 12px; /* caption-1 */
+  line-height: 16px;
+  max-width: 100%;
+}
+
+/* top-leaderboard: under the navbar, shrinks on small screens */
+.ad-top-leaderboard {
+  margin: 8px auto 0;
+  width: fit-content;
+  max-width: calc(100% - 16px);
+}
+.ad-top-leaderboard .ad-placeholder,
+.ad-top-leaderboard .adsbygoogle {
+  max-width: 100%;
+}
+
+/* footer: under the workspace */
+.ad-footer {
+  margin: 8px auto 16px;
+  width: fit-content;
+  max-width: calc(100% - 16px);
+}
+
+/* middle: inside the middle column, below the document controls */
+.ad-middle {
+  margin: 16px 8px 0;
+}
+
+/* sidebar: right rail on very wide screens only */
+.ad-sidebar {
+  position: fixed;
+  top: calc(var(--navbar-height) + 8px);
+  right: 8px;
+  z-index: 10;
+}
+
+/* ---------- Bridge tokens into the JSON editor (vanilla-jsoneditor) ---------- */
+
+.json-editor-host {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  --jse-theme-color: var(--accent);
+  --jse-theme-color-highlight: color-mix(in srgb, var(--accent) 85%, #ffffff);
+  --jse-background-color: var(--surface);
+  --jse-text-color: var(--on-surface);
+  --jse-menu-color: var(--accent-contrast);
+  --jse-main-border: none;
+  --jse-panel-background: var(--surface-secondary);
+  --jse-panel-color: var(--on-surface);
+  --jse-panel-border: 1px solid var(--separator);
+  --jse-context-menu-background: var(--surface);
+  --jse-context-menu-color: var(--on-surface);
+  --jse-tooltip-color: var(--on-surface);
+  --jse-tooltip-background: var(--surface-secondary);
+}
+
+/* ---------- Toast feedback ---------- */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 2000;
+  padding: 10px 20px;
+  background: var(--surface);
+  color: var(--on-surface);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-menu);
+  font-size: 15px;
+  opacity: 0;
+  transform: translate(-50%, 8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ---------- Responsive ad placement rules (DESIGN.md → Components) ---------- */
+@media (max-width: 1599px) {
+  .ad-sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .ad-middle {
+    display: none;
+  }
+}

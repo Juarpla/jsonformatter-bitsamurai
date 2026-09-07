@@ -1,23 +1,45 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+import '../styles/global.css';
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'JSON Formatter Online',
+  description =
+    'Free client-side JSON formatter and editor: format, validate and view JSON as text, tree or table. Your data never leaves your browser.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-accent="green">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <script is:inline>
+      // Apply persisted appearance before first paint (anti-FOUC).
+      (function () {
+        try {
+          var t = localStorage.getItem('app.theme');
+          var a = localStorage.getItem('app.accent');
+          if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+          if (a === 'green' || a === 'blue' || a === 'red') {
+            document.documentElement.dataset.accent = a;
+          }
+        } catch (e) {
+          /* storage unavailable */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

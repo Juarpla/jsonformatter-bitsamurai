@@ -1,0 +1,76 @@
+---
+/**
+ * Google AdSense slot with layout-safe variants (see DESIGN.md → Components).
+ *
+ * - Without PUBLIC_ADSENSE_CLIENT: renders a labeled placeholder that reserves
+ *   the exact final size of the ad (useful to validate the layout).
+ * - With PUBLIC_ADSENSE_CLIENT: renders a manual <ins class="adsbygoogle">
+ *   and loads the AdSense library once. Auto Ads are never enabled.
+ */
+import { ads, type AdVariant } from '../config/ads';
+
+interface Props {
+  variant: AdVariant;
+}
+
+const { variant } = Astro.props;
+
+const formats: Record<AdVariant, { w: number; h: number; label: string }> = {
+  middle: { w: 300, h: 600, label: '300×600' },
+  'top-leaderboard': { w: 728, h: 90, label: '728×90 · 320×100 on mobile' },
+  footer: { w: 728, h: 90, label: '728×90' },
+  sidebar: { w: 160, h: 600, label: '160×600' },
+};
+
+const fmt = formats[variant];
+const client = ads.client;
+const enabled = ads.placements[variant];
+---
+
+{
+  enabled && (
+    <aside class:list={['ad-slot', `ad-${variant}`]} aria-label="Advertisement">
+      {client ? (
+        <ins
+          class="adsbygoogle"
+          style="display:block"
+          data-ad-client={client}
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        />
+      ) : (
+        <div class="ad-placeholder" style={`width: ${fmt.w}px; height: ${fmt.h}px;`}>
+          <span>Ad</span>
+          <small>{fmt.label}</small>
+        </div>
+      )}
+    </aside>
+  )
+}
+
+<script>
+  // Load the AdSense library once, only when a publisher id is configured.
+  const CLIENT = import.meta.env.PUBLIC_ADSENSE_CLIENT as string | undefined;
+
+  if (CLIENT) {
+    const existing = document.querySelector<HTMLScriptElement>('script[data-adsense]');
+    if (!existing) {
+      const script = document.createElement('script');
+      script.async = true;
+      script.dataset.adsense = 'true';
+      script.crossOrigin = 'anonymous';
+      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${CLIENT}`;
+      document.head.appendChild(script);
+    }
+
+    const pushSlots = () => {
+      const w = window as unknown as { adsbygoogle?: Record<string, unknown>[] };
+      w.adsbygoogle = w.adsbygoogle || [];
+      document.querySelectorAll('.adsbygoogle').forEach(() => {
+        w.adsbygoogle?.push({});
+      });
+    };
+    if (document.readyState === 'complete') pushSlots();
+    else window.addEventListener('load', pushSlots, { once: true });
+  }
+</script>

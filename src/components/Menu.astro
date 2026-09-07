@@ -1,0 +1,62 @@
+---
+/**
+ * Accessible dropdown menu primitive.
+ * Structure/styles are global (menus appear in both the light navbar and
+ * accent-colored toolbars); each usage provides its own trigger + items.
+ */
+interface Props {
+  label?: string;
+  align?: 'left' | 'right';
+  class?: string;
+}
+
+const { label = '', align = 'left', class: className = '' } = Astro.props;
+---
+
+<div class:list={['menu', className]} data-align={align}>
+  <button class="menu-trigger" type="button" aria-haspopup="menu" aria-expanded="false">
+    {label ? <span>{label}</span> : <slot name="trigger" />}
+  </button>
+  <div class="menu-panel" role="menu" hidden>
+    <slot />
+  </div>
+</div>
+
+<script>
+  function setOpen(menu: Element, open: boolean): void {
+    menu.classList.toggle('open', open);
+    const panel = menu.querySelector<HTMLElement>('.menu-panel');
+    const trigger = menu.querySelector<HTMLButtonElement>('.menu-trigger');
+    if (panel) panel.hidden = !open;
+    trigger?.setAttribute('aria-expanded', String(open));
+  }
+
+  function closeAllMenus(): void {
+    document.querySelectorAll('.menu.open').forEach((menu) => setOpen(menu, false));
+  }
+
+  document.addEventListener('click', (event) => {
+    const target = event.target as Element | null;
+    if (!target) return;
+
+    const trigger = target.closest('.menu-trigger');
+    if (trigger) {
+      const menu = trigger.closest('.menu');
+      if (!menu) return;
+      const wasOpen = menu.classList.contains('open');
+      closeAllMenus();
+      if (!wasOpen) setOpen(menu, true);
+      return;
+    }
+
+    // Clicking an item closes menus, unless the item opts out (radio groups).
+    const item = target.closest('[role="menuitem"], [role="menuitemradio"]');
+    const keepOpen = item?.closest('[data-keep-open]')?.closest('.menu');
+    closeAllMenus();
+    if (item && keepOpen) setOpen(keepOpen, true);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeAllMenus();
+  });
+</script>

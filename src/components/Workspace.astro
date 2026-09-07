@@ -212,6 +212,7 @@ import { ads } from '../config/ads';
   } from 'vanilla-jsoneditor';
   import 'vanilla-jsoneditor/themes/jse-theme-dark.css';
   import { isDarkAppearance, APPEARANCE_EVENT, SPLITTER_KEY } from '../scripts/appearance';
+  import { jsonrepair } from 'jsonrepair';
   import {
     registerShortcuts,
     type PanelSide,
@@ -397,6 +398,19 @@ import { ads } from '../config/ads';
     }
   }
 
+  function copySmartFormatted(raw: string): void {
+    let repaired: string;
+    try {
+      repaired = jsonrepair(raw);
+    } catch {
+      toast('Could not repair JSON');
+      return;
+    }
+    const parsed = parseOrNotify(repaired);
+    if (parsed === undefined) return;
+    void copyToClipboard(`${JSON.stringify(parsed, null, 2)}\n`);
+  }
+
   function copyVariant(side: PanelSide, action: string): void {
     const raw = getText(side);
     if (!raw.trim()) {
@@ -409,6 +423,10 @@ import { ads } from '../config/ads';
     }
     if (action === 'copy-escaped') {
       void copyToClipboard(JSON.stringify(raw));
+      return;
+    }
+    if (action === 'copy-smart-formatted') {
+      copySmartFormatted(raw);
       return;
     }
     const parsed = parseOrNotify(raw);

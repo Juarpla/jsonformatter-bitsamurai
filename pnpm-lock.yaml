@@ -11,6 +11,9 @@ importers:
       astro:
         specifier: ^7.3.1
         version: 7.3.1(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(sass@1.104.0)(yaml@2.9.0)
+      jsonrepair:
+        specifier: ^3.15.0
+        version: 3.15.0
       vanilla-jsoneditor:
         specifier: ^3.13.0
         version: 3.13.0

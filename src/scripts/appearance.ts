@@ -27,8 +27,8 @@ export function currentThemeSetting(): ThemeSetting {
 
 export function currentAccentSetting(): AccentSetting {
   const accent = document.documentElement.dataset.accent;
-  if (accent === 'blue' || accent === 'red') return accent;
-  return 'green';
+  if (accent === 'green' || accent === 'red') return accent;
+  return 'blue';
 }
 
 export function persistTheme(setting: ThemeSetting): void {

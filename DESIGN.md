@@ -1,9 +1,9 @@
 ---
 version: alpha
 name: HIG JSON Formatter
-description: Apple Human Interface Guidelines-based design system for a client-side JSON formatter web tool. Light and dark appearance follows the operating system; the accent color is user-selectable (Green by default, Blue, or Red).
+description: Apple Human Interface Guidelines-based design system for a client-side JSON formatter web tool. Light and dark appearance follows the operating system; the accent color is user-selectable (Blue by default, Green, or Red).
 colors:
-  primary: "#5C7A1E"
+  primary: "#007AFF"
   on-primary: "#FFFFFF"
   background: "#F2F2F7"
   surface: "#FFFFFF"
@@ -151,17 +151,17 @@ The system is built on Apple's semantic color names. **Tokens are normative for 
 | `warning` | #FF9500 | #FF9F0A | systemOrange |
 | `error` | #FF3B30 | #FF453A | systemRed |
 
-**Accent variants** (user-selectable; applied to the toolbar chrome and primary actions). `primary` in the front matter is the default (Green):
+**Accent variants** (user-selectable; applied to the toolbar chrome and primary actions). `primary` in the front matter is the default (Blue):
 
-| Accent | Light & Dark chrome | Contrast with white text |
-| --- | --- | --- |
-| Green (default) | #5C7A1E | 4.9:1 — AA for text |
-| Blue | #007AFF (dark #0A84FF) | ~4:1 — UI components/large text only |
-| Red | #FF3B30 (dark #FF453A) | ~4:1 — UI components/large text only |
+| Accent | Light | Dark | Contrast with white text |
+| --- | --- | --- | --- |
+| Blue (default) | #007AFF | #0A84FF | ~4:1 — UI components/large text only |
+| Green | #5C7A1E | #5C7A1E | 4.9:1 — AA for text |
+| Red | #FF3B30 | #FF453A | ~4:1 — UI components/large text only |
 
-- **Primary (#5C7A1E):** an olive "tool green" tuned to pass WCAG AA with white text; it colors the toolbar chrome of each editor panel.
+- **Primary (#007AFF):** Apple systemBlue; the default accent. It colors the toolbar chrome of each editor panel and the brand mark. Fails AA for small white text, so chrome labels render at 600 weight (see Typography).
 - **On-primary (#FFFFFF):** white content sitting on primary/toolbar chrome.
-- **Link (#007AFF):** Apple systemBlue; doubles as the Blue accent variant.
+- **Link (#007AFF):** Apple systemBlue; matches the default accent.
 
 ## Typography
 
@@ -204,7 +204,7 @@ Depth is conveyed with **tonal layers**, HIG-style: `background → surface → 
 ## Shapes
 
 - **Corner radii:** `sm 4px` (buttons, inputs), `md 8px` (menus, cards, ad slots), `lg 12px` (floating panels), `full` (pills).
-- **Mode tabs** (text/tree/table) are a segmented pill: active segment filled with the accent color, inactive transparent — the only place where a filled pill denotes state.
+- **Mode tabs** (text/tree/table) are a segmented pill on the accent chrome: the active segment is filled with a dark overlay of the chrome (`rgba(0,0,0,0.32)`, hover `0.12`), inactive segments transparent — state is shown by tonal depth, never by a second accent fill.
 - Panels and toolbars are **square-edged** (0 radius): chrome meets the viewport edge flush, instrument-like. Soft radii live inside the chrome (buttons, menus, ads).
 
 ## Components

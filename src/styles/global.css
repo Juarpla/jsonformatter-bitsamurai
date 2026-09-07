@@ -3,10 +3,12 @@
    values here or in components; always reference these tokens. */
 
 :root {
-  /* Accent — default Green. Overridden by html[data-accent='blue'|'red']. */
-  --accent: #5c7a1e;
+  /* Accent — default Blue (system blue). Overridden by
+     html[data-accent='green'|'red'] blocks below (kept after the dark
+     blocks so an explicit choice wins in dark appearance too). */
+  --accent: #007aff;
   --accent-contrast: #ffffff;
-  --accent-soft: rgba(92, 122, 30, 0.14);
+  --accent-soft: rgba(0, 122, 255, 0.14);
 
   /* HIG semantic colors — light appearance (canonical). */
   --background: #f2f2f7;
@@ -40,6 +42,8 @@
 
 /* Dark appearance — explicit user choice. */
 :root[data-theme='dark'] {
+  --accent: #0a84ff;
+  --accent-soft: rgba(10, 132, 255, 0.14);
   --background: #000000;
   --surface: #1c1c1e;
   --surface-secondary: #2c2c2e;
@@ -57,6 +61,8 @@
 /* Dark appearance — "Browser default" follows the OS. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
+    --accent: #0a84ff;
+    --accent-soft: rgba(10, 132, 255, 0.14);
     --background: #000000;
     --surface: #1c1c1e;
     --surface-secondary: #2c2c2e;
@@ -72,14 +78,33 @@
   }
 }
 
-/* Accent variants. Green works in both appearances (chrome color). */
-:root[data-accent='blue'] {
-  --accent: #007aff;
-  --accent-soft: rgba(0, 122, 255, 0.14);
+/* Accent variants — placed AFTER the dark blocks so an explicit choice wins
+   in dark appearance too (DESIGN.md → Colors, accent table). Blue needs no
+   block: it is the :root default, with the dark variant set above. */
+:root[data-accent='green'] {
+  --accent: #5c7a1e;
+  --accent-soft: rgba(92, 122, 30, 0.14);
 }
 :root[data-accent='red'] {
   --accent: #ff3b30;
   --accent-soft: rgba(255, 59, 48, 0.14);
+}
+:root[data-theme='dark'][data-accent='red'] {
+  --accent: #ff453a;
+  --accent-soft: rgba(255, 69, 58, 0.14);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light'])[data-accent='red'] {
+    --accent: #ff453a;
+    --accent-soft: rgba(255, 69, 58, 0.14);
+  }
+}
+
+/* Small chrome labels sit on the accent fill; blue/red fail AA at small
+   weights, so labels render 600 there (DESIGN.md → Typography). */
+:root[data-accent='blue'] :is(.tb-label, .doc-name, .mode-tab),
+:root[data-accent='red'] :is(.tb-label, .doc-name, .mode-tab) {
+  font-weight: 600;
 }
 
 /* Base */

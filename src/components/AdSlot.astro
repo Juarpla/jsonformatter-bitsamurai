@@ -6,42 +6,50 @@
  *   the exact final size of the ad (useful to validate the layout).
  * - With PUBLIC_ADSENSE_CLIENT: renders a manual <ins class="adsbygoogle">
  *   and loads the AdSense library once. Auto Ads are never enabled.
+ * - Sizes are fixed (they live in CSS, see global.css) and never change with
+ *   ad state: `header` 468×60 (300×50 at 1024–1279px), `middle` 200×200 —
+ *   rendered twice via `unit` ('a' top, 'b' bottom; 'b' hides on short
+ *   viewports) —, `footer` 728×90.
  */
-import { ads, type AdVariant } from '../config/ads';
+import { ads, type AdUnit, type AdVariant } from '../config/ads';
 
 interface Props {
   variant: AdVariant;
+  /** Middle variant only: which of the two stacked units. */
+  unit?: 'a' | 'b';
 }
 
-const { variant } = Astro.props;
+const { variant, unit } = Astro.props;
 
-const formats: Record<AdVariant, { w: number; h: number; label: string }> = {
-  middle: { w: 300, h: 600, label: '300×600' },
-  'top-leaderboard': { w: 728, h: 90, label: '728×90 · 320×100 on mobile' },
-  footer: { w: 728, h: 90, label: '728×90' },
-  sidebar: { w: 160, h: 600, label: '160×600' },
+const labels: Record<AdVariant, string> = {
+  header: '468×60 · 300×50 @1024–1279',
+  middle: '200×200',
+  footer: '728×90',
 };
 
-const fmt = formats[variant];
 const client = ads.client;
 const enabled = ads.placements[variant];
+const adUnit: AdUnit = variant === 'middle' ? `middle-${unit ?? 'a'}` : variant;
+const slotId = ads.slotIds[adUnit];
 ---
 
 {
   enabled && (
-    <aside class:list={['ad-slot', `ad-${variant}`]} aria-label="Advertisement">
+    <aside
+      class:list={['ad-slot', `ad-${variant}`, unit && `ad-middle-${unit}`]}
+      aria-label="Advertisement"
+    >
       {client ? (
         <ins
           class="adsbygoogle"
           style="display:block"
           data-ad-client={client}
-          data-ad-format="auto"
-          data-full-width-responsive="true"
+          data-ad-slot={slotId}
         />
       ) : (
-        <div class="ad-placeholder" style={`width: ${fmt.w}px; height: ${fmt.h}px;`}>
+        <div class="ad-placeholder">
           <span>Ad</span>
-          <small>{fmt.label}</small>
+          <small>{labels[variant]}</small>
         </div>
       )}
     </aside>

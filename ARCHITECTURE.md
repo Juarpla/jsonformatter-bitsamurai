@@ -113,7 +113,8 @@ Panels are independent editor instances; the middle column moves content between
 
 ## Advertising
 
-- Single component: `AdSlot.astro` with variants `middle` (300×600, center column), `top-leaderboard` (728×90/320×100), `footer` (728×90), `sidebar` (160×600, ≥1600px viewports only). Each reserves exact space to avoid CLS.
+- Single component: `AdSlot.astro` with variants `header` (468×60 pill inside the navbar, 300×50 at 1024–1279px, hidden < 1024px), `middle` (two stacked 200×200 cards under a "Sponsored" label in the center column; the second hides below ~864px viewport height), `footer` (728×90). Sizes are fixed in CSS and reserved up front to avoid CLS.
+- Optional `data-ad-slot` ids per unit (header, middle-a, middle-b) come from `PUBLIC_ADSENSE_SLOT_*` env vars (see `.env.example`).
 - Enabled placements and the AdSense client id live in `src/config/ads.ts` (`PUBLIC_ADSENSE_CLIENT` env var; see `.env.example`).
 - Without a client id, labeled placeholders render (useful for layout checks).
 - **Auto Ads stay off**; only manual `<ins class="adsbygoogle">` slots. Ads live in the app chrome, never inside editor panels.

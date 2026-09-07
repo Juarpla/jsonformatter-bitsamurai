@@ -42,7 +42,13 @@ import { ads } from '../config/ads';
       </div>
     </div>
 
-    {ads.placements.middle && <AdSlot variant="middle" />}
+    {ads.placements.middle && (
+      <div class="ad-group">
+        <span class="ctl-label">Sponsored</span>
+        <AdSlot variant="middle" unit="a" />
+        <AdSlot variant="middle" unit="b" />
+      </div>
+    )}
 
     <div class="splitter" data-role="splitter" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Resize panels" aria-valuemin="15" aria-valuemax="85" aria-valuenow="50" title="Drag left or right to change the width of the panels">
       <span class="splitter-dots" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -129,6 +135,16 @@ import { ads } from '../config/ads';
     justify-content: center;
   }
 
+  /* Sponsored ad group: reads like a third control group */
+  .ad-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 16px;
+  }
+
   /* Splitter zone: drag to change panel widths */
   .splitter {
     flex: 1;
@@ -193,6 +209,10 @@ import { ads } from '../config/ads';
 
     .compare {
       width: auto;
+    }
+
+    .ad-group {
+      display: none;
     }
 
     .splitter {

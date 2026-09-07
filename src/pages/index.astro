@@ -9,12 +9,10 @@ import { ads } from '../config/ads';
 <Layout>
   <div class="page">
     <Navbar />
-    {ads.placements['top-leaderboard'] && <AdSlot variant="top-leaderboard" />}
     <main class="workspace-area">
       <Workspace />
     </main>
     {ads.placements.footer && <AdSlot variant="footer" />}
-    {ads.placements.sidebar && <AdSlot variant="sidebar" />}
     <footer class="page-footer">
       <h1 class="sr-only">JSON Formatter &amp; Validator Online — Free, Client-Side</h1>
       <p class="sr-only">
@@ -40,14 +38,4 @@ import { ads } from '../config/ads';
     min-height: 0;
   }
 
-  /* Reserve a right rail when the sidebar ad is enabled */
-  .page:has(.ad-sidebar) {
-    padding-right: 176px;
-  }
-
-  @media (max-width: 1599px) {
-    .page:has(.ad-sidebar) {
-      padding-right: 0;
-    }
-  }
 </style>

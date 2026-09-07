@@ -191,17 +191,16 @@ The type system is the iOS **Dynamic Type** scale mapped to web pixels, rendered
 
 ## Layout
 
-The app is a **full-viewport instrument**: `html, body { height: 100% }`, a fixed-height navbar (52px), a flexible workspace, and panel status bars (24px) pinned to the bottom of each panel.
+The app is a **full-viewport instrument**: `html, body { height: 100% }`, a fixed-height navbar (72px), a flexible workspace, and panel status bars (24px) pinned to the bottom of each panel.
 
 - **Spacing scale:** strict 8pt rhythm with a 4px half-step (`xs 4, sm 8, md 16, lg 24, xl 32`).
 - **Tap targets:** interactive controls are at least **44px** tall (HIG touch minimum) — menu items, middle-column buttons. Dense toolbar buttons inside the accent chrome may be 36px on pointer-first desktop layouts; they grow to 44px on touch-sized viewports.
-- **Workspace grid:** `[left panel] [middle column 200px] [right panel]`. The middle column stacks: document controls (Copy ←/→, Transform ←/→, Compare), then a draggable splitter zone below.
+- **Workspace grid:** `[left panel] [middle column] [right panel]`. The middle column is 200px wide by default and widens to 234px whenever the middle ad slots are enabled (two 200×200 cards + card padding). The middle column stacks: document controls (Copy ←/→, Transform ←/→, Compare), a **Sponsored** group (two 200×200 ad cards stacked; the second hides on viewports shorter than ~864px), then a draggable splitter zone below.
 - **Splitter:** dragging the middle column's lower zone changes panel widths (15%–85% clamp); the ratio persists in localStorage.
 - **Breakpoints:**
-  - ≥ 1280px — toolbar buttons show icon + text label.
-  - 1024–1279px — toolbar buttons collapse to icon-only.
-  - < 1024px — panels stack vertically; the middle column becomes a horizontal control strip between them; the middle ad slot is hidden.
-  - ≥ 1600px — the sidebar ad variant may appear; below that it is removed from the layout.
+  - ≥ 1280px — toolbar buttons show icon + text label; the header ad renders at 468×60.
+  - 1024–1279px — toolbar buttons collapse to icon-only; the header ad renders at 300×50.
+  - < 1024px — panels stack vertically; the middle column becomes a horizontal control strip between them; the header and middle ad slots are hidden.
 
 ## Elevation & Depth
 
@@ -214,7 +213,7 @@ Depth is conveyed with **tonal layers**, HIG-style: `background → surface → 
 
 ## Components
 
-- **navbar:** brand at left (inline squircle mark in the accent color + title-2 weight 600 for the product name "JSON Formatter", secondary color for the "Bit SamurAI" suffix), actions at right: Settings menu and Help. Height 52px, surface background, hairline bottom separator.
+- **navbar:** brand at left (inline squircle mark in the accent color + title-2 weight 600 for the product name "JSON Formatter", secondary color for the "Bit SamurAI" suffix), actions at right: Settings menu and Help. Height 72px, surface background, hairline bottom separator. The optional header ad pill sits centered between brand and actions (surface-secondary, radius md, hairline border, "Ad" badge on its top-right hairline).
 - **toolbar:** the accent chrome strip atop each editor panel, height 44px, white icons/labels on the accessible chrome fill (`primary-chrome`). Contains New, Open▾, Save▾, Copy▾, Full screen; the document name chip lives in the same strip.
 - **button-primary:** primary-chrome-filled, white text (rounded sm). Used for Compare and any future primary action.
 - **button-ghost:** transparent background (omit the fill), on-surface text; hover tints with `surface-secondary`. Used for menu items and neutral actions.
@@ -222,7 +221,7 @@ Depth is conveyed with **tonal layers**, HIG-style: `background → surface → 
 - **dropdown-menu:** surface background, radius md, shadow (see Elevation), 8px internal padding; items are 44px min-height callout text; destructive items use the `error` color. Variants are expressed as related entries (hover: surface-secondary background).
 - **editor:** flat surface, mono-body typography, no radius. The library's internal menu bar inherits the accent via `--jse-theme-color`; its colors are bridged to these tokens through CSS custom properties.
 - **status-bar:** footnote text on surface-secondary, 24px tall; left side shows caret position ("Line: n Column: m"), right side shows document size.
-- **ad-slot:** ads are chrome, not content: surface background (never a contrasting color), 8px padding, radius md, caption-1 placeholder label in on-surface-tertiary. Every variant reserves its exact final size up front so enabling ads never shifts layout. Placements: `middle` (300×600 inside the middle column, hidden < 1024px), `top-leaderboard` (728×90 → 320×100 under the navbar), `footer` (728×90 under the workspace), `sidebar` (160×600 right rail ≥ 1600px). Ads must never be placed inside the editor area or disguised as content.
+- **ad-slot:** ads are chrome, not content: surface background (never a contrasting color), 8px padding, radius md, caption-1 placeholder label in on-surface-tertiary. Every variant reserves its exact final size up front — fixed CSS sizes that never change with ad state — so enabling ads never shifts layout. Placements: `header` (468×60 pill inside the navbar between brand and actions; 300×50 at 1024–1279px; hidden < 1024px; "Ad" badge riding its top-right hairline), `middle` (two 200×200 cards stacked under a "Sponsored" label styled like the control-group labels; the second card hides below ~864px viewport height; hidden < 1024px), `footer` (728×90 under the workspace). Ads must never be placed inside the editor area or disguised as content.
 - **page-footer:** invisible zero-height block under the workspace; hosts the visually hidden `h1` and product description (`sr-only`) for search engines and screen readers. No visual footprint, non-interactive.
 
 ## Do's and Don'ts

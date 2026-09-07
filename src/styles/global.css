@@ -35,8 +35,9 @@
   --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas,
     'Liberation Mono', monospace;
 
-  /* Dimensions (DESIGN.md → Layout / Shapes). */
-  --navbar-height: 52px;
+  /* Dimensions (DESIGN.md → Layout / Shapes). 72px leaves room for the
+     468×60 header ad pill (fixed height, with or without ads). */
+  --navbar-height: 72px;
   --toolbar-height: 44px;
   --statusbar-height: 24px;
   --middle-width: 200px;
@@ -295,15 +296,58 @@ a {
   max-width: 100%;
 }
 
-/* top-leaderboard: under the navbar, shrinks on small screens */
-.ad-top-leaderboard {
-  margin: 8px auto 0;
-  width: fit-content;
-  max-width: calc(100% - 16px);
+/* header: pill inside the navbar, centered between brand and menus.
+   Fixed sizes: 468×60 ≥ 1280px, 300×50 at 1024–1279px, hidden < 1024px. */
+.ad-header {
+  position: relative;
+  flex: none;
+  background: var(--surface-secondary);
+  border: 1px solid var(--separator);
+  padding: 0;
 }
-.ad-top-leaderboard .ad-placeholder,
-.ad-top-leaderboard .adsbygoogle {
-  max-width: 100%;
+
+/* "Ad" badge riding the pill's top-right hairline — never covers ad pixels. */
+.ad-header::after {
+  content: 'Ad';
+  position: absolute;
+  top: -9px;
+  right: 10px;
+  padding: 0 6px;
+  background: var(--surface-secondary);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-sm);
+  font-size: 12px; /* caption-1 */
+  line-height: 16px;
+  color: var(--on-surface-tertiary);
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .ad-header .ad-placeholder,
+  .ad-header .adsbygoogle {
+    width: 300px;
+    height: 50px;
+  }
+}
+
+/* The middle column widens to fit the two 200×200 middle ad cards
+   (200 + card padding 16 + borders 2 = 218, +16 breathing room) */
+.page:has(.ad-middle) {
+  --middle-width: 234px;
+}
+
+/* middle: two 200×200 cards stacked under the "Sponsored" label */
+.ad-middle .ad-placeholder,
+.ad-middle .adsbygoogle {
+  width: 200px;
+  height: 200px;
+}
+
+/* The second card only fits on tall viewports
+   (navbar 72 + controls 304 + 216 + 8 + 216 + splitter 48 = 864px) */
+@media (max-height: 863px) {
+  .ad-middle-b {
+    display: none;
+  }
 }
 
 /* footer: under the workspace */
@@ -312,18 +356,10 @@ a {
   width: fit-content;
   max-width: calc(100% - 16px);
 }
-
-/* middle: inside the middle column, below the document controls */
-.ad-middle {
-  margin: 16px 8px 0;
-}
-
-/* sidebar: right rail on very wide screens only */
-.ad-sidebar {
-  position: fixed;
-  top: calc(var(--navbar-height) + 8px);
-  right: 8px;
-  z-index: 10;
+.ad-footer .ad-placeholder,
+.ad-footer .adsbygoogle {
+  width: 728px;
+  height: 90px;
 }
 
 /* ---------- Bridge tokens into the JSON editor (vanilla-jsoneditor) ---------- */
@@ -382,14 +418,8 @@ a {
 }
 
 /* ---------- Responsive ad placement rules (DESIGN.md → Components) ---------- */
-@media (max-width: 1599px) {
-  .ad-sidebar {
-    display: none;
-  }
-}
-
 @media (max-width: 1023px) {
-  .ad-middle {
+  .ad-header {
     display: none;
   }
 }

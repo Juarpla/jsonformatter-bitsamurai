@@ -15,6 +15,14 @@ import { ads } from '../config/ads';
     </main>
     {ads.placements.footer && <AdSlot variant="footer" />}
     {ads.placements.sidebar && <AdSlot variant="sidebar" />}
+    <footer class="page-footer">
+      <h1 class="sr-only">JSON Formatter &amp; Validator Online — Free, Client-Side</h1>
+      <p>
+        Free client-side JSON formatter and validator — format, validate and view JSON as
+        text, tree or table. Everything runs in your browser; your data never leaves your
+        device.
+      </p>
+    </footer>
   </div>
 </Layout>
 
@@ -41,5 +49,19 @@ import { ads } from '../config/ads';
     .page:has(.ad-sidebar) {
       padding-right: 0;
     }
+  }
+
+  /* Page footer: one-line product description (DESIGN.md → page-footer). */
+  .page-footer {
+    padding: 4px 16px 12px;
+    text-align: center;
+  }
+
+  .page-footer p {
+    max-width: 720px;
+    margin: 0 auto;
+    font-size: 13px; /* footnote */
+    line-height: 18px;
+    color: var(--on-surface-secondary);
   }
 </style>

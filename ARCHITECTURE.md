@@ -23,7 +23,7 @@ Architecture of **jsonformatter-bitsamurai** (product: **JSON Formatter bit-samu
 
 ```
 /
-├── public/                  # Static assets served as-is (favicon, …)
+├── public/                  # Static assets served as-is (favicon, og-image, …)
 ├── src/
 │   ├── components/          # UI building blocks (.astro, minimal markup)
 │   │   ├── Navbar.astro     # Brand + Settings (theme/accent) + Help
@@ -34,9 +34,10 @@ Architecture of **jsonformatter-bitsamurai** (product: **JSON Formatter bit-samu
 │   ├── config/
 │   │   └── ads.ts           # Ad placements toggles + AdSense client id
 │   ├── layouts/
-│   │   └── Layout.astro     # HTML shell, theme bootstrap (anti-FOUC), head
+│   │   └── Layout.astro     # HTML shell, head (canonical/OG/Twitter/JSON-LD), theme bootstrap (anti-FOUC)
 │   ├── pages/
-│   │   └── index.astro      # Root page (the only route today)
+│   │   ├── index.astro      # Root page (the only HTML route)
+│   │   └── robots.txt.ts    # robots.txt endpoint (Sitemap URL derived from `site`)
 │   ├── scripts/             # Client-side modules (framework-agnostic TS)
 │   │   ├── appearance.ts    # Theme/accent state helpers
 │   │   ├── workspace.ts     # Workspace orchestration (editors, actions, splitter)
@@ -47,7 +48,8 @@ Architecture of **jsonformatter-bitsamurai** (product: **JSON Formatter bit-samu
 │   └── styles/
 │       └── global.css       # Design tokens (light/dark, accents) + base styles
 ├── scripts/
-│   └── visual-walkthrough.mjs  # Zero-dep Safari screenshot walkthrough (pnpm visual)
+│   ├── visual-walkthrough.mjs  # Zero-dep Safari screenshot walkthrough (pnpm visual)
+│   └── og-image.mjs            # Zero-dep Safari render of the OG card (pnpm og)
 ├── screenshots/              # Visual walkthrough output (gitignored; regenerate with pnpm visual)
 ├── wrangler.jsonc             # Cloudflare deploy config (assets → ./dist)
 ├── DESIGN.md                # Design system (tokens + rationale) — normative for UI
@@ -85,7 +87,7 @@ Panels are independent editor instances; the middle column moves content between
 
 | Component | Responsibility |
 | --- | --- |
-| `Layout.astro` | HTML shell; anti-FOUC theme bootstrap; loads `global.css` |
+| `Layout.astro` | HTML shell; head metadata (canonical, Open Graph, Twitter card, JSON-LD); anti-FOUC theme bootstrap; loads `global.css` |
 | `Navbar.astro` | Brand; Settings menu (Theme: Browser default/Light/Dark; Theme color: Green/Blue/Red); Help |
 | `Workspace.astro` | Grid with two `EditorPanel`s + middle column; splitter; markup + styles only — behavior lives in `src/scripts/workspace.ts` |
 | `EditorPanel.astro` | Document bar (name), app toolbar (New/Open/Save/Copy▾/Full screen), mode tabs (text/tree/table), editor host, status bar (Line/Column + size) |
@@ -99,6 +101,15 @@ Panels are independent editor instances; the middle column moves content between
 - Visual walkthrough: `pnpm visual` captures the six appearance combos (light/dark × blue/green/red) with real Safari via `safaridriver` (zero dependencies; one-time `sudo safaridriver --enable`). Screenshots land in `screenshots/` (gitignored — ephemeral evidence; regenerate any time).
 - Editor appearance: the container gets the `jse-theme-dark` class (library dark theme) + `editor.refresh()`; colors are bridged to tokens via `--jse-*` custom properties in `global.css`.
 - Persistence: `localStorage` keys `app.theme`, `app.accent`, `app.splitter` (left panel percentage).
+
+## SEO & metadata
+
+- **Canonical origin.** `site` in `astro.config.mjs` is the single source for every absolute URL (canonical link, `og:url`, JSON-LD, sitemap, robots.txt). It defaults to the deployed workers.dev URL and is overridden by `PUBLIC_SITE_URL` (see `.env.example`) when moving to a custom domain.
+- **Head metadata** (`Layout.astro`): title + description defaults, `robots` (`index, follow`), `author`, canonical link, a full Open Graph set, a Twitter `summary_large_image` card, and a JSON-LD `WebApplication` (application category DeveloperApplication, free offer, feature list, author Juarpla, publisher "Bit SamurAI").
+- **Fresh dates.** `datePublished`/`dateModified` in the JSON-LD are stamped at build time, so every deploy refreshes the reported modification date.
+- **OG image.** `public/og-image.png` (1200×630) is rendered from the brand artwork by `scripts/og-image.mjs` (zero-dependency Safari capture; `pnpm og`; one-time `sudo safaridriver --enable`). Re-run it whenever the brand artwork changes.
+- **Sitemap + robots.txt.** `@astrojs/sitemap` emits `sitemap-index.xml` from `site` at build; `src/pages/robots.txt.ts` prerenders `robots.txt` with a `Sitemap:` line derived from `Astro.site`, so a domain change needs no edits.
+- Privacy unchanged: no analytics or metadata beacons — the only external request remains Google AdSense via `AdSlot.astro`.
 
 ## Advertising
 

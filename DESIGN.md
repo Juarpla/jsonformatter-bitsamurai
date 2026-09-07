@@ -126,6 +126,10 @@ components:
     textColor: "{colors.on-surface-tertiary}"
     rounded: "{rounded.md}"
     padding: 8px
+  page-footer:
+    backgroundColor: "{colors.background}"
+    textColor: "{colors.on-surface-secondary}"
+    typography: "{typography.footnote}"
 ---
 
 ## Overview
@@ -220,6 +224,7 @@ Depth is conveyed with **tonal layers**, HIG-style: `background → surface → 
 - **editor:** flat surface, mono-body typography, no radius. The library's internal menu bar inherits the accent via `--jse-theme-color`; its colors are bridged to these tokens through CSS custom properties.
 - **status-bar:** footnote text on surface-secondary, 24px tall; left side shows caret position ("Line: n Column: m"), right side shows document size.
 - **ad-slot:** ads are chrome, not content: surface background (never a contrasting color), 8px padding, radius md, caption-1 placeholder label in on-surface-tertiary. Every variant reserves its exact final size up front so enabling ads never shifts layout. Placements: `middle` (300×600 inside the middle column, hidden < 1024px), `top-leaderboard` (728×90 → 320×100 under the navbar), `footer` (728×90 under the workspace), `sidebar` (160×600 right rail ≥ 1600px). Ads must never be placed inside the editor area or disguised as content.
+- **page-footer:** one-line product description under the workspace; footnote text in on-surface-secondary directly on the background (no fill), centered, max-width 720px, non-interactive. Also hosts the visually hidden `h1` for search engines and screen readers.
 
 ## Do's and Don'ts
 

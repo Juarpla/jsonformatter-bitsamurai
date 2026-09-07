@@ -7,10 +7,51 @@ interface Props {
 }
 
 const {
-  title = 'JSON Formatter bit-samurAI',
+  title = 'JSON Formatter & Validator Online — Free, Client-Side',
   description =
-    'JSON Formatter bit-samurAI — free client-side JSON formatter and editor: format, validate and view JSON as text, tree or table. Your data never leaves your browser.',
+    'Format, validate and view JSON as text, tree or table — 100% in your browser. Free, no sign-up, your data never leaves your device.',
 } = Astro.props;
+
+// Canonical origin (`site` in astro.config.mjs). Typed `URL | undefined`, but
+// the config always sets it, so the absolute URLs below resolve at build time.
+const site = Astro.site;
+const canonical = site ? new URL(Astro.url.pathname, site).href : undefined;
+const ogImage = site ? new URL('/og-image.png', site).href : undefined;
+
+// Refreshed on every build/deploy so search engines and AI bots always see a
+// current publication/modification date.
+const buildDate = new Date().toISOString();
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'JSON Formatter bit-samurAI',
+  url: canonical,
+  description,
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires JavaScript',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  featureList: [
+    'Format and pretty-print JSON',
+    'Validate JSON with inline error feedback',
+    'Repair malformed JSON',
+    'Text, tree and table views',
+    'Two-panel workspace with copy between panels',
+    '100% client-side — JSON never leaves the browser',
+  ],
+  author: { '@type': 'Person', name: 'Juarpla', url: 'https://github.com/Juarpla' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Bit SamurAI',
+    url: canonical,
+    logo: { '@type': 'ImageObject', url: ogImage, width: 1200, height: 630 },
+  },
+  image: ogImage,
+  copyrightYear: '2026',
+  datePublished: buildDate,
+  dateModified: buildDate,
+};
 ---
 
 <!doctype html>
@@ -18,14 +59,46 @@ const {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Juarpla" />
+    {canonical && <link rel="canonical" href={canonical} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1c1c1e" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="description" content={description} />
-    <title>{title}</title>
+
+    <!-- Open Graph (social cards + AI bots) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="JSON Formatter bit-samurAI" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    {ogImage && <meta property="og:image:width" content="1200" />}
+    {ogImage && <meta property="og:image:height" content="630" />}
+    <meta
+      property="og:image:alt"
+      content="JSON Formatter bit-samurAI — blue app icon with curly braces next to the product name"
+    />
+
+    <!-- Twitter/X card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
+    <meta
+      name="twitter:image:alt"
+      content="JSON Formatter bit-samurAI — blue app icon with curly braces next to the product name"
+    />
+
+    <!-- Structured data for search engines and AI bots -->
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(schema)} />
+
     <script is:inline>
       // Apply persisted appearance before first paint (anti-FOUC).
       (function () {

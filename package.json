@@ -10,9 +10,11 @@
     "build": "astro build",
     "preview": "astro preview",
     "visual": "node scripts/visual-walkthrough.mjs",
+    "og": "node scripts/og-image.mjs",
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
     "astro": "^7.3.1",
     "jsonrepair": "^3.15.0",
     "vanilla-jsoneditor": "^3.13.0"

@@ -209,7 +209,7 @@ Depth is conveyed with **tonal layers**, HIG-style: `background → surface → 
 
 ## Components
 
-- **navbar:** brand at left (title-2 weight 600 for the product name, secondary color for "Online" suffix), actions at right: Settings menu and Help. Height 52px, surface background, hairline bottom separator.
+- **navbar:** brand at left (inline squircle mark in the accent color + title-2 weight 600 for the product name "JSON Formatter", secondary color for the "bit-samurAI" suffix), actions at right: Settings menu and Help. Height 52px, surface background, hairline bottom separator.
 - **toolbar:** the green (accent) strip atop each editor panel, height 44px, white icons/labels. Contains New, Open▾, Save▾, Copy▾, Full screen; the document name chip lives in the same strip.
 - **button-primary:** accent-filled, white text (rounded sm). Used for Compare and any future primary action.
 - **button-ghost:** transparent background (omit the fill), on-surface text; hover tints with `surface-secondary`. Used for menu items and neutral actions.

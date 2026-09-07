@@ -1,6 +1,6 @@
 # Architecture
 
-Architecture of **jsonformatter-bitsamurai**, a client-side JSON formatter and editor. Agents: read [AGENTS.md](./AGENTS.md) first; keep this document updated in the same PR as any architecture change.
+Architecture of **jsonformatter-bitsamurai** (product: **JSON Formatter bit-samurAI**), a client-side JSON formatter and editor. Agents: read [AGENTS.md](./AGENTS.md) first; keep this document updated in the same PR as any architecture change.
 
 ## Stack
 

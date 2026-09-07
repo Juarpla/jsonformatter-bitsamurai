@@ -4,7 +4,7 @@ Guidance for AI coding agents working on this repository. Keep this file concise
 
 ## Project overview
 
-**jsonformatter-bitsamurai** is a client-side JSON formatter and editor web tool (two-panel workspace with text/tree/table modes), visually inspired by jsoneditoronline.org. All JSON processing happens in the user's browser — there is no backend, no database, and user data never leaves the client. Built with Astro and deployed to Cloudflare as static assets.
+**jsonformatter-bitsamurai** (product: **JSON Formatter bit-samurAI**) is a client-side JSON formatter and editor web tool (two-panel workspace with text/tree/table modes), visually inspired by jsoneditoronline.org. All JSON processing happens in the user's browser — there is no backend, no database, and user data never leaves the client. Built with Astro and deployed to Cloudflare as static assets.
 
 ## Commands
 

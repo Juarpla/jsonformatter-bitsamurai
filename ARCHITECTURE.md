@@ -38,7 +38,12 @@ Architecture of **jsonformatter-bitsamurai**, a client-side JSON formatter and e
 │   ├── pages/
 │   │   └── index.astro      # Root page (the only route today)
 │   ├── scripts/             # Client-side modules (framework-agnostic TS)
-│   │   └── appearance.ts    # Theme/accent state helpers
+│   │   ├── appearance.ts    # Theme/accent state helpers
+│   │   ├── workspace.ts     # Workspace orchestration (editors, actions, splitter)
+│   │   ├── shortcuts.ts     # App keyboard shortcuts (format/search)
+│   │   ├── json.ts          # Pure JSON toolkit (parse/format/compact/repair)
+│   │   ├── clipboard.ts     # Clipboard write helper
+│   │   └── toast.ts         # Transient feedback message
 │   └── styles/
 │       └── global.css       # Design tokens (light/dark, accents) + base styles
 ├── wrangler.jsonc           # Cloudflare deploy config (assets → ./dist)
@@ -55,7 +60,7 @@ Conventions when growing the project:
 ## Rendering model
 
 - Astro prerenders static HTML at build time. There is no server runtime.
-- The two JSON editors are **client-only islands**: markup renders an empty container; `Workspace.astro`'s bundled `<script>` instantiates `vanilla-jsoneditor` via `createJSONEditor({ target, props })` after DOMContentLoaded.
+- The two JSON editors are **client-only islands**: markup renders an empty container; `Workspace.astro` loads `src/scripts/workspace.ts`, which instantiates `vanilla-jsoneditor` via `createJSONEditor({ target, props })` on page load.
 - JavaScript is required for editing features; the shell renders without it.
 
 ## Data flow
@@ -79,7 +84,7 @@ Panels are independent editor instances; the middle column moves content between
 | --- | --- |
 | `Layout.astro` | HTML shell; anti-FOUC theme bootstrap; loads `global.css` |
 | `Navbar.astro` | Brand; Settings menu (Theme: Browser default/Light/Dark; Theme color: Green/Blue/Red); Help |
-| `Workspace.astro` | Grid with two `EditorPanel`s + middle column; splitter; editor lifecycle; all app actions |
+| `Workspace.astro` | Grid with two `EditorPanel`s + middle column; splitter; markup + styles only — behavior lives in `src/scripts/workspace.ts` |
 | `EditorPanel.astro` | Document bar (name), app toolbar (New/Open/Save/Copy▾/Full screen), mode tabs (text/tree/table), editor host, status bar (Line/Column + size) |
 | `Menu.astro` | Generic accessible dropdown (click outside + Esc close, `aria-haspopup`/`aria-expanded`) |
 | `AdSlot.astro` | Reserved-space ad containers; placeholders until AdSense client id is set |

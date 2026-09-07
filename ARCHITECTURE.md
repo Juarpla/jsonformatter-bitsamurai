@@ -67,7 +67,7 @@ file / clipboard / typing
           ├─ tree mode   ── structural editing
           └─ table mode  ── flat view
         parse/format/validate ── all in-browser (jsonrepair, ajv inside the lib)
-   └─▶ actions: New · Open(file) · Save(download) · Copy(formatted/compacted/escaped/as-is)
+    └─▶ actions: New · Open(file) · Save(download) · Format in place (Ctrl/⌘+Shift+F; `src/scripts/shortcuts.ts`) · Copy(formatted/smart/compacted/escaped/as-is)
         Full screen; Copy ←/→ between panels (middle column)
 ```
 

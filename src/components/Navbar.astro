@@ -158,6 +158,14 @@ import Menu from './Menu.astro';
     type ThemeSetting,
     type AccentSetting,
   } from '../scripts/appearance';
+  import { isMacPlatform } from '../scripts/shortcuts';
+
+  // Show platform-correct modifier labels for the advertised shortcuts.
+  if (isMacPlatform()) {
+    document.querySelectorAll('.help-line kbd').forEach((el) => {
+      el.textContent = (el.textContent ?? '').replace('Ctrl+', '⌘').replace('Shift+', '⇧');
+    });
+  }
 
   function syncChecked(): void {
     const theme = currentThemeSetting();

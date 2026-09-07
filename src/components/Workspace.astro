@@ -212,8 +212,10 @@ import { ads } from '../config/ads';
   } from 'vanilla-jsoneditor';
   import 'vanilla-jsoneditor/themes/jse-theme-dark.css';
   import { isDarkAppearance, APPEARANCE_EVENT, SPLITTER_KEY } from '../scripts/appearance';
-
-  type PanelSide = 'left' | 'right';
+  import {
+    registerShortcuts,
+    type PanelSide,
+  } from '../scripts/shortcuts';
 
   interface EditorRef {
     get: () => Content;
@@ -257,6 +259,14 @@ import { ads } from '../config/ads';
 
   const hosts = document.querySelectorAll<HTMLElement>('[data-editor-host]');
   const editors = new Map<PanelSide, EditorRef>();
+  const panelModes = new Map<PanelSide, Mode>([
+    ['left', Mode.text],
+    ['right', Mode.text],
+  ]);
+
+  function isTextMode(side: PanelSide): boolean {
+    return (panelModes.get(side) ?? Mode.text) === Mode.text;
+  }
 
   function contentText(content: Content): string {
     if ('text' in content && typeof content.text === 'string') return content.text;
@@ -290,6 +300,10 @@ import { ads } from '../config/ads';
         statusBar: false,
         onChange: () => scheduleSizeUpdate(side),
         onSelect: (selection: JSONEditorSelection | undefined) => updateCaret(side, selection),
+        onChangeMode: (mode: Mode) => {
+          panelModes.set(side, mode);
+          syncModeTabs(side, mode);
+        },
       } satisfies JSONEditorPropsOptional,
     }) as unknown as EditorRef;
 
@@ -468,11 +482,7 @@ import { ads } from '../config/ads';
 
   // -------------------------------------------------------------- mode tabs
 
-  function setMode(side: PanelSide, mode: string): void {
-    const editor = editors.get(side);
-    if (!editor) return;
-    if (mode !== 'text' && mode !== 'tree' && mode !== 'table') return;
-    editor.updateProps({ mode: mode as Mode });
+  function syncModeTabs(side: PanelSide, mode: Mode): void {
     document.querySelectorAll(`[data-panel="${side}"] .mode-tab`).forEach((tab) => {
       const tabEl = tab as HTMLElement;
       const active = tabEl.dataset.mode === mode;
@@ -480,6 +490,56 @@ import { ads } from '../config/ads';
       tabEl.setAttribute('aria-selected', String(active));
     });
   }
+
+  function setMode(side: PanelSide, mode: string): void {
+    const editor = editors.get(side);
+    if (!editor) return;
+    if (mode !== 'text' && mode !== 'tree' && mode !== 'table') return;
+    // panelModes + tab sync happen via onChangeMode.
+    editor.updateProps({ mode: mode as Mode });
+  }
+
+  // -------------------------------------------------------------- shortcuts
+
+  function panelOf(target: EventTarget | null): PanelSide | undefined {
+    if (!(target instanceof Element)) return undefined;
+    const side = target.closest('[data-panel]')?.getAttribute('data-panel');
+    return side === 'left' || side === 'right' ? side : undefined;
+  }
+
+  function formatPanel(side: PanelSide): void {
+    const editor = editors.get(side);
+    if (!editor) return;
+    const content = editor.get();
+    let parsed: unknown;
+    if ('json' in content && content.json !== undefined) {
+      parsed = content.json;
+    } else if ('text' in content && typeof content.text === 'string') {
+      if (!content.text.trim()) {
+        toast('Nothing to format');
+        return;
+      }
+      const result = parseOrNotify(content.text);
+      if (result === undefined) return;
+      parsed = result;
+    } else {
+      toast('Nothing to format');
+      return;
+    }
+    if (isTextMode(side)) editor.set({ text: JSON.stringify(parsed, null, 2) });
+    else editor.set({ json: parsed });
+    updateSize(side);
+    toast('Formatted');
+  }
+
+  function searchPanel(side: PanelSide): void {
+    // Tree/table modes render their own Search button in the editor menu bar;
+    // text mode already opened CodeMirror's search panel natively.
+    const host = document.querySelector<HTMLElement>(`[data-editor-host="${side}"]`);
+    host?.querySelector<HTMLButtonElement>('.jse-search')?.click();
+  }
+
+  registerShortcuts({ panelOf, isTextMode, formatPanel, searchPanel });
 
   // ------------------------------------------------------------- theme sync
 

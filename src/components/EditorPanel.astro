@@ -75,12 +75,6 @@ const { side, docName = 'untitled' } = Astro.props;
     </div>
   </div>
 
-  <div class="mode-tabs" role="tablist" aria-label={`View mode (${side} panel)`}>
-    <button class="mode-tab is-active" type="button" role="tab" aria-selected="true" data-mode="text" data-panel={side}>text</button>
-    <button class="mode-tab" type="button" role="tab" aria-selected="false" data-mode="tree" data-panel={side}>tree</button>
-    <button class="mode-tab" type="button" role="tab" aria-selected="false" data-mode="table" data-panel={side}>table</button>
-  </div>
-
   <div class="editor-host json-editor-host" data-editor-host={side}></div>
 
   <footer class="status-bar">
@@ -177,30 +171,6 @@ const { side, docName = 'untitled' } = Astro.props;
     width: 13px;
     height: 13px;
     opacity: 0.8;
-  }
-
-  /* Mode tabs: segmented pills on the accent chrome */
-  .mode-tabs {
-    display: flex;
-    gap: 2px;
-    padding: 0 8px;
-    background: var(--accent-chrome);
-  }
-
-  .mode-tab {
-    min-height: 30px;
-    padding: 2px 12px;
-    color: var(--accent-contrast);
-    font-size: 15px;
-    border-radius: var(--radius-full, 9999px);
-  }
-
-  .mode-tab:hover {
-    background: rgba(0, 0, 0, 0.12);
-  }
-
-  .mode-tab.is-active {
-    background: rgba(0, 0, 0, 0.32);
   }
 
   /* Status bar */

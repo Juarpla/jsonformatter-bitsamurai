@@ -10,8 +10,8 @@
   --accent-contrast: #ffffff;
   --accent-soft: rgba(0, 122, 255, 0.14);
   /* Chrome accent — the accessible variant of the accent, used for every
-     accent fill that carries white text (toolbar chrome, mode tabs, editor
-     menu bar). Apple's "increased contrast" systemBlue; 4.57:1 with white
+     accent fill that carries white text (toolbar chrome, editor menu bar).
+     Apple's "increased contrast" systemBlue; 4.57:1 with white
      (WCAG AA for text). Identity uses of the accent (brand mark, soft tints)
      keep --accent. */
   --accent-chrome: #1e6ef4;

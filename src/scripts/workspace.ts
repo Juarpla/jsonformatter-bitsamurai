@@ -1,7 +1,7 @@
 /**
  * Workspace orchestration: two vanilla-jsoneditor instances, status bars,
- * panel actions (New/Open/Save/Copy/Full screen/Format), mode tabs,
- * app shortcuts, theme sync and the splitter.
+ * panel actions (New/Open/Save/Copy/Full screen/Format), app shortcuts,
+ * theme sync and the splitter.
  *
  * Loaded once by Workspace.astro (`initWorkspace()`); markup and styles
  * stay in the component.
@@ -108,7 +108,6 @@ export function initWorkspace(): void {
         onSelect: (selection: JSONEditorSelection | undefined) => updateCaret(side, selection),
         onChangeMode: (mode: Mode) => {
           panelModes.set(side, mode);
-          syncModeTabs(side, mode);
         },
       } satisfies JSONEditorPropsOptional,
     }) as unknown as EditorRef;
@@ -279,25 +278,6 @@ export function initWorkspace(): void {
     toast(`Copied to the ${to} panel`);
   }
 
-  // -------------------------------------------------------------- mode tabs
-
-  function syncModeTabs(side: PanelSide, mode: Mode): void {
-    document.querySelectorAll(`[data-panel="${side}"] .mode-tab`).forEach((tab) => {
-      const tabEl = tab as HTMLElement;
-      const active = tabEl.dataset.mode === mode;
-      tabEl.classList.toggle('is-active', active);
-      tabEl.setAttribute('aria-selected', String(active));
-    });
-  }
-
-  function setMode(side: PanelSide, mode: string): void {
-    const editor = editors.get(side);
-    if (!editor) return;
-    if (mode !== 'text' && mode !== 'tree' && mode !== 'table') return;
-    // panelModes + tab sync happen via onChangeMode.
-    editor.updateProps({ mode: mode as Mode });
-  }
-
   // -------------------------------------------------------------- shortcuts
 
   function panelOf(target: EventTarget | null): PanelSide | undefined {
@@ -427,32 +407,9 @@ export function initWorkspace(): void {
 
   // ------------------------------------------------------- event delegation
 
-  // Arrow keys move between a panel's mode tabs (automatic activation).
-  document.addEventListener('keydown', (event) => {
-    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
-    const target = event.target as Element | null;
-    const tab = target?.closest<HTMLElement>('.mode-tab');
-    const panel = tab?.dataset.panel;
-    if (!tab || (panel !== 'left' && panel !== 'right')) return;
-    event.preventDefault();
-    const tabs = [
-      ...document.querySelectorAll<HTMLElement>(`[data-panel="${panel}"] .mode-tab`),
-    ];
-    const next =
-      tabs[(tabs.indexOf(tab) + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length];
-    next?.focus();
-    if (next?.dataset.mode) setMode(panel, next.dataset.mode);
-  });
-
   document.addEventListener('click', (event) => {
     const target = event.target as Element | null;
     if (!target) return;
-
-    const tab = target.closest<HTMLElement>('.mode-tab');
-    if (tab?.dataset.panel && tab.dataset.mode) {
-      setMode(tab.dataset.panel as PanelSide, tab.dataset.mode);
-      return;
-    }
 
     const trigger = target.closest<HTMLElement>('[data-action]');
     if (!trigger) return;

@@ -1,4 +1,4 @@
-# JSON Formatter bit-samurAI
+# JSON Formatter Bit SamurAI
 
 Free client-side JSON formatter and editor. Format, validate and explore JSON as
 text, tree or table — in a two-panel workspace, visually inspired by

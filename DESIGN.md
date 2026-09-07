@@ -156,7 +156,7 @@ The system is built on Apple's semantic color names. **Tokens are normative for 
 | `warning` | #FF9500 | #FF9F0A | systemOrange |
 | `error` | #FF3B30 | #FF453A | systemRed |
 
-**Accent variants** (user-selectable; the accent fills the toolbar chrome and primary actions). `primary` in the front matter is the default (Blue). The **chrome rule:** any accent fill that carries white text (toolbar chrome, mode tabs, primary buttons, the editor menu bar) uses the *chrome* variant — Apple's "Increase Contrast" counterpart of the accent — so white labels meet WCAG AA for text everywhere. Identity uses of the accent (brand mark, soft tints) keep the plain accent:
+**Accent variants** (user-selectable; the accent fills the toolbar chrome and primary actions). `primary` in the front matter is the default (Blue). The **chrome rule:** any accent fill that carries white text (toolbar chrome, primary buttons, the editor menu bar) uses the *chrome* variant — Apple's "Increase Contrast" counterpart of the accent — so white labels meet WCAG AA for text everywhere. Identity uses of the accent (brand mark, soft tints) keep the plain accent:
 
 | Accent | Accent light | Accent dark | Chrome light | Chrome dark | White on chrome |
 | --- | --- | --- | --- | --- | --- |
@@ -194,7 +194,7 @@ The type system is the iOS **Dynamic Type** scale mapped to web pixels, rendered
 The app is a **full-viewport instrument**: `html, body { height: 100% }`, a fixed-height navbar (52px), a flexible workspace, and panel status bars (24px) pinned to the bottom of each panel.
 
 - **Spacing scale:** strict 8pt rhythm with a 4px half-step (`xs 4, sm 8, md 16, lg 24, xl 32`).
-- **Tap targets:** interactive controls are at least **44px** tall (HIG touch minimum) — menu items, middle-column buttons, mode tabs. Dense toolbar buttons inside the accent chrome may be 36px on pointer-first desktop layouts; they grow to 44px on touch-sized viewports.
+- **Tap targets:** interactive controls are at least **44px** tall (HIG touch minimum) — menu items, middle-column buttons. Dense toolbar buttons inside the accent chrome may be 36px on pointer-first desktop layouts; they grow to 44px on touch-sized viewports.
 - **Workspace grid:** `[left panel] [middle column 200px] [right panel]`. The middle column stacks: document controls (Copy ←/→, Transform ←/→, Compare), then a draggable splitter zone below.
 - **Splitter:** dragging the middle column's lower zone changes panel widths (15%–85% clamp); the ratio persists in localStorage.
 - **Breakpoints:**
@@ -209,13 +209,12 @@ Depth is conveyed with **tonal layers**, HIG-style: `background → surface → 
 
 ## Shapes
 
-- **Corner radii:** `sm 4px` (buttons, inputs), `md 8px` (menus, cards, ad slots), `lg 12px` (floating panels), `full` (pills).
-- **Mode tabs** (text/tree/table) are a segmented pill on the accent chrome: the active segment is filled with a dark overlay of the chrome (`rgba(0,0,0,0.32)`, hover `0.12`), inactive segments transparent — state is shown by tonal depth, never by a second accent fill.
+- **Corner radii:** `sm 4px` (buttons, inputs), `md 8px` (menus, cards, ad slots), `lg 12px` (floating panels).
 - Panels and toolbars are **square-edged** (0 radius): chrome meets the viewport edge flush, instrument-like. Soft radii live inside the chrome (buttons, menus, ads).
 
 ## Components
 
-- **navbar:** brand at left (inline squircle mark in the accent color + title-2 weight 600 for the product name "JSON Formatter", secondary color for the "bit-samurAI" suffix), actions at right: Settings menu and Help. Height 52px, surface background, hairline bottom separator.
+- **navbar:** brand at left (inline squircle mark in the accent color + title-2 weight 600 for the product name "JSON Formatter", secondary color for the "Bit SamurAI" suffix), actions at right: Settings menu and Help. Height 52px, surface background, hairline bottom separator.
 - **toolbar:** the accent chrome strip atop each editor panel, height 44px, white icons/labels on the accessible chrome fill (`primary-chrome`). Contains New, Open▾, Save▾, Copy▾, Full screen; the document name chip lives in the same strip.
 - **button-primary:** primary-chrome-filled, white text (rounded sm). Used for Compare and any future primary action.
 - **button-ghost:** transparent background (omit the fill), on-surface text; hover tints with `surface-secondary`. Used for menu items and neutral actions.
@@ -224,7 +223,7 @@ Depth is conveyed with **tonal layers**, HIG-style: `background → surface → 
 - **editor:** flat surface, mono-body typography, no radius. The library's internal menu bar inherits the accent via `--jse-theme-color`; its colors are bridged to these tokens through CSS custom properties.
 - **status-bar:** footnote text on surface-secondary, 24px tall; left side shows caret position ("Line: n Column: m"), right side shows document size.
 - **ad-slot:** ads are chrome, not content: surface background (never a contrasting color), 8px padding, radius md, caption-1 placeholder label in on-surface-tertiary. Every variant reserves its exact final size up front so enabling ads never shifts layout. Placements: `middle` (300×600 inside the middle column, hidden < 1024px), `top-leaderboard` (728×90 → 320×100 under the navbar), `footer` (728×90 under the workspace), `sidebar` (160×600 right rail ≥ 1600px). Ads must never be placed inside the editor area or disguised as content.
-- **page-footer:** one-line product description under the workspace; footnote text in on-surface-secondary directly on the background (no fill), centered, max-width 720px, non-interactive. Also hosts the visually hidden `h1` for search engines and screen readers.
+- **page-footer:** invisible zero-height block under the workspace; hosts the visually hidden `h1` and product description (`sr-only`) for search engines and screen readers. No visual footprint, non-interactive.
 
 ## Do's and Don'ts
 

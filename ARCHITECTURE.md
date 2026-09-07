@@ -1,6 +1,6 @@
 # Architecture
 
-Architecture of **jsonformatter-bitsamurai** (product: **JSON Formatter bit-samurAI**), a client-side JSON formatter and editor. Agents: read [AGENTS.md](./AGENTS.md) first; keep this document updated in the same PR as any architecture change.
+Architecture of **jsonformatter-bitsamurai** (product: **JSON Formatter Bit SamurAI**), a client-side JSON formatter and editor. Agents: read [AGENTS.md](./AGENTS.md) first; keep this document updated in the same PR as any architecture change.
 
 ## Stack
 
@@ -90,14 +90,14 @@ Panels are independent editor instances; the middle column moves content between
 | `Layout.astro` | HTML shell; head metadata (canonical, Open Graph, Twitter card, JSON-LD); anti-FOUC theme bootstrap; loads `global.css` |
 | `Navbar.astro` | Brand; Settings menu (Theme: Browser default/Light/Dark; Theme color: Green/Blue/Red); Help |
 | `Workspace.astro` | Grid with two `EditorPanel`s + middle column; splitter; markup + styles only — behavior lives in `src/scripts/workspace.ts` |
-| `EditorPanel.astro` | Document bar (name), app toolbar (New/Open/Save/Copy▾/Full screen), mode tabs (text/tree/table), editor host, status bar (Line/Column + size) |
+| `EditorPanel.astro` | Document bar (name), app toolbar (New/Open/Save/Copy▾/Full screen), editor host, status bar (Line/Column + size). Mode switching (text/tree/table) uses the editor's built-in menu bar |
 | `Menu.astro` | Generic accessible dropdown (click outside + Esc close, `aria-haspopup`/`aria-expanded`) |
 | `AdSlot.astro` | Reserved-space ad containers; placeholders until AdSense client id is set |
 
 ## Theme system
 
 - Appearance: `data-theme="light|dark"` on `<html>`; absent = follow `prefers-color-scheme` ("Browser default"). Set before first paint by an inline script in `Layout.astro`.
-- Accent: `data-accent="green|blue|red"` on `<html>` (default `blue`); maps to `--accent` (identity uses: brand mark, soft tints) and `--accent-chrome` (the accessible variant used for every accent fill that carries white text — toolbar chrome, mode tabs, editor menu bar). Values and the chrome rule: [DESIGN.md](./DESIGN.md) → Colors.
+- Accent: `data-accent="green|blue|red"` on `<html>` (default `blue`); maps to `--accent` (identity uses: brand mark, soft tints) and `--accent-chrome` (the accessible variant used for every accent fill that carries white text — toolbar chrome, editor menu bar). Values and the chrome rule: [DESIGN.md](./DESIGN.md) → Colors.
 - Visual walkthrough: `pnpm visual` captures the six appearance combos (light/dark × blue/green/red) with real Safari via `safaridriver` (zero dependencies; one-time `sudo safaridriver --enable`). Screenshots land in `screenshots/` (gitignored — ephemeral evidence; regenerate any time).
 - Editor appearance: the container gets the `jse-theme-dark` class (library dark theme) + `editor.refresh()`; colors are bridged to tokens via `--jse-*` custom properties in `global.css`.
 - Persistence: `localStorage` keys `app.theme`, `app.accent`, `app.splitter` (left panel percentage).

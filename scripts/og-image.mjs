@@ -111,7 +111,7 @@ const CARD_HTML = `<!doctype html>
   </svg>
   <div class="text">
     <div class="name">JSON Formatter</div>
-    <div class="suffix-line"><span class="suffix">bit-samurAI</span></div>
+    <div class="suffix-line"><span class="suffix">Bit SamurAI</span></div>
     <div class="tagline">Format, validate and view JSON — right in your browser</div>
   </div>
 </div>

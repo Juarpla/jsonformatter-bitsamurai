@@ -46,7 +46,10 @@ Architecture of **jsonformatter-bitsamurai** (product: **JSON Formatter bit-samu
 │   │   └── toast.ts         # Transient feedback message
 │   └── styles/
 │       └── global.css       # Design tokens (light/dark, accents) + base styles
-├── wrangler.jsonc           # Cloudflare deploy config (assets → ./dist)
+├── scripts/
+│   └── visual-walkthrough.mjs  # Zero-dep Safari screenshot walkthrough (pnpm visual)
+├── screenshots/              # Visual walkthrough output (gitignored; regenerate with pnpm visual)
+├── wrangler.jsonc             # Cloudflare deploy config (assets → ./dist)
 ├── DESIGN.md                # Design system (tokens + rationale) — normative for UI
 └── AGENTS.md                # Agent entry point
 ```
@@ -92,7 +95,8 @@ Panels are independent editor instances; the middle column moves content between
 ## Theme system
 
 - Appearance: `data-theme="light|dark"` on `<html>`; absent = follow `prefers-color-scheme` ("Browser default"). Set before first paint by an inline script in `Layout.astro`.
-- Accent: `data-accent="green|blue|red"` on `<html>` (default `green`); maps to `--accent`/`--accent-contrast` tokens.
+- Accent: `data-accent="green|blue|red"` on `<html>` (default `blue`); maps to `--accent` (identity uses: brand mark, soft tints) and `--accent-chrome` (the accessible variant used for every accent fill that carries white text — toolbar chrome, mode tabs, editor menu bar). Values and the chrome rule: [DESIGN.md](./DESIGN.md) → Colors.
+- Visual walkthrough: `pnpm visual` captures the six appearance combos (light/dark × blue/green/red) with real Safari via `safaridriver` (zero dependencies; one-time `sudo safaridriver --enable`). Screenshots land in `screenshots/` (gitignored — ephemeral evidence; regenerate any time).
 - Editor appearance: the container gets the `jse-theme-dark` class (library dark theme) + `editor.refresh()`; colors are bridged to tokens via `--jse-*` custom properties in `global.css`.
 - Persistence: `localStorage` keys `app.theme`, `app.accent`, `app.splitter` (left panel percentage).
 

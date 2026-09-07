@@ -16,6 +16,7 @@ Guidance for AI coding agents working on this repository. Keep this file concise
 | `pnpm build` | Production build to `./dist/` |
 | `pnpm astro check` | TypeScript/Astro diagnostics (strict mode) |
 | `pnpm preview` | Preview the production build |
+| `pnpm visual` | Capture the 6 appearance screenshots (light/dark × blue/green/red) with real Safari into `screenshots/` (one-time: `sudo safaridriver --enable`) |
 | `npx @google/design.md lint DESIGN.md` | Validate the design system file |
 
 ## Environment

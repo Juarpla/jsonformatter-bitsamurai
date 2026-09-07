@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# visual walkthrough output — ephemeral evidence, regenerate with `pnpm visual`
+screenshots/

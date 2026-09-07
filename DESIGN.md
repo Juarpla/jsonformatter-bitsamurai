@@ -4,6 +4,7 @@ name: HIG JSON Formatter
 description: Apple Human Interface Guidelines-based design system for a client-side JSON formatter web tool. Light and dark appearance follows the operating system; the accent color is user-selectable (Blue by default, Green, or Red).
 colors:
   primary: "#007AFF"
+  primary-chrome: "#1E6EF4"
   on-primary: "#FFFFFF"
   background: "#F2F2F7"
   surface: "#FFFFFF"
@@ -86,11 +87,11 @@ components:
     typography: "{typography.title-2}"
     height: 52px
   toolbar:
-    backgroundColor: "{colors.primary}"
+    backgroundColor: "{colors.primary-chrome}"
     textColor: "{colors.on-primary}"
     height: 44px
   button-primary:
-    backgroundColor: "{colors.primary}"
+    backgroundColor: "{colors.primary-chrome}"
     textColor: "{colors.on-primary}"
     rounded: "{rounded.sm}"
     padding: 12px
@@ -151,15 +152,16 @@ The system is built on Apple's semantic color names. **Tokens are normative for 
 | `warning` | #FF9500 | #FF9F0A | systemOrange |
 | `error` | #FF3B30 | #FF453A | systemRed |
 
-**Accent variants** (user-selectable; applied to the toolbar chrome and primary actions). `primary` in the front matter is the default (Blue):
+**Accent variants** (user-selectable; the accent fills the toolbar chrome and primary actions). `primary` in the front matter is the default (Blue). The **chrome rule:** any accent fill that carries white text (toolbar chrome, mode tabs, primary buttons, the editor menu bar) uses the *chrome* variant — Apple's "Increase Contrast" counterpart of the accent — so white labels meet WCAG AA for text everywhere. Identity uses of the accent (brand mark, soft tints) keep the plain accent:
 
-| Accent | Light | Dark | Contrast with white text |
-| --- | --- | --- | --- |
-| Blue (default) | #007AFF | #0A84FF | ~4:1 — UI components/large text only |
-| Green | #5C7A1E | #5C7A1E | 4.9:1 — AA for text |
-| Red | #FF3B30 | #FF453A | ~4:1 — UI components/large text only |
+| Accent | Accent light | Accent dark | Chrome light | Chrome dark | White on chrome |
+| --- | --- | --- | --- | --- | --- |
+| Blue (default) | #007AFF | #0A84FF | #1E6EF4 | #0A6ED1 | 4.57 / 5.04 — AA for text |
+| Green | #5C7A1E | #5C7A1E | #5C7A1E | #5C7A1E | 4.93 — AA for text |
+| Red | #FF3B30 | #FF453A | #E9152D | #C93A30 | 4.56 / 5.08 — AA for text |
 
-- **Primary (#007AFF):** Apple systemBlue; the default accent. It colors the toolbar chrome of each editor panel and the brand mark. Fails AA for small white text, so chrome labels render at 600 weight (see Typography).
+- **Primary (#007AFF):** Apple systemBlue; the default accent. Blue/red fail AA for small white text (~4:1), which is why those accents are restricted to identity uses and never carry text — text-bearing fills use `primary-chrome`.
+- **Primary-chrome (#1E6EF4):** Apple's increased-contrast systemBlue; the accessible fill for the toolbar chrome and primary actions (see the chrome rule above). `--accent-chrome` in CSS.
 - **On-primary (#FFFFFF):** white content sitting on primary/toolbar chrome.
 - **Link (#007AFF):** Apple systemBlue; matches the default accent.
 
@@ -181,7 +183,7 @@ The type system is the iOS **Dynamic Type** scale mapped to web pixels, rendered
 | mono-caption | 12px / 16px | 400 | Document size in status bar |
 
 - **JSON is always monospace** (`ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas`…). Never set editor content in the sans stack.
-- Labels inside colored toolbar chrome are white; use subhead (15px) or smaller with 600 weight when on the Blue/Red accents.
+- Labels inside the accent chrome are white; the chrome fill uses the accessible accent variant (see Colors — the chrome rule), so regular subhead (15px) weight 400 is the default everywhere — no special weight is required on any accent.
 
 ## Layout
 
@@ -210,8 +212,8 @@ Depth is conveyed with **tonal layers**, HIG-style: `background → surface → 
 ## Components
 
 - **navbar:** brand at left (inline squircle mark in the accent color + title-2 weight 600 for the product name "JSON Formatter", secondary color for the "bit-samurAI" suffix), actions at right: Settings menu and Help. Height 52px, surface background, hairline bottom separator.
-- **toolbar:** the green (accent) strip atop each editor panel, height 44px, white icons/labels. Contains New, Open▾, Save▾, Copy▾, Full screen; the document name chip lives in the same strip.
-- **button-primary:** accent-filled, white text (rounded sm). Used for Compare and any future primary action.
+- **toolbar:** the accent chrome strip atop each editor panel, height 44px, white icons/labels on the accessible chrome fill (`primary-chrome`). Contains New, Open▾, Save▾, Copy▾, Full screen; the document name chip lives in the same strip.
+- **button-primary:** primary-chrome-filled, white text (rounded sm). Used for Compare and any future primary action.
 - **button-ghost:** transparent background (omit the fill), on-surface text; hover tints with `surface-secondary`. Used for menu items and neutral actions.
 - **link-text:** links inside menus and help content; link color, no underline until hover.
 - **dropdown-menu:** surface background, radius md, shadow (see Elevation), 8px internal padding; items are 44px min-height callout text; destructive items use the `error` color. Variants are expressed as related entries (hover: surface-secondary background).
@@ -229,4 +231,4 @@ Depth is conveyed with **tonal layers**, HIG-style: `background → surface → 
 - Don't rely on color alone to convey state — pair accent fills with weight, icons, or text.
 - Do respect the user's appearance choice: absent a manual override, follow `prefers-color-scheme` ("Browser default").
 - Don't add heavy shadows or gradients to flat chrome; depth comes from tonal layers and hairlines.
-- Do test Blue and Red accents after any change to toolbar or menu styling — white-on-blue/red is allowed for UI components but fails AA for small text.
+- Do run `pnpm visual` after any change to toolbar or menu styling — the six appearance screenshots (light/dark × blue/green/red) document every accent combo. Chrome fills always use the accessible accent variant, so white-on-chrome meets WCAG AA for text in all six.

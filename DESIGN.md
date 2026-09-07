@@ -195,12 +195,13 @@ The app is a **full-viewport instrument**: `html, body { height: 100% }`, a fixe
 
 - **Spacing scale:** strict 8pt rhythm with a 4px half-step (`xs 4, sm 8, md 16, lg 24, xl 32`).
 - **Tap targets:** interactive controls are at least **44px** tall (HIG touch minimum) — menu items, middle-column buttons. Dense toolbar buttons inside the accent chrome may be 36px on pointer-first desktop layouts; they grow to 44px on touch-sized viewports.
-- **Workspace grid:** `[left panel] [middle column] [right panel]`. The middle column is 200px wide by default and widens to 234px whenever the middle ad slots are enabled (two 200×200 cards + card padding). The middle column stacks: document controls (Copy ←/→, Transform ←/→, Compare), a **Sponsored** group (two 200×200 ad cards stacked; the second hides on viewports shorter than ~864px), then a draggable splitter zone below.
+- **Workspace grid:** `[left panel] [middle column] [right panel]`. The middle column is 200px wide by default and widens to 284px whenever the middle ad slot is enabled (one 250×250 card + card padding). The middle column stacks: document controls (Copy ←/→, Transform ←/→, Compare), an ad group (one 250×250 card), then a draggable splitter zone below.
 - **Splitter:** dragging the middle column's lower zone changes panel widths (15%–85% clamp); the ratio persists in localStorage.
 - **Breakpoints:**
-  - ≥ 1280px — toolbar buttons show icon + text label; the header ad renders at 468×60.
-  - 1024–1279px — toolbar buttons collapse to icon-only; the header ad renders at 300×50.
-  - < 1024px — panels stack vertically; the middle column becomes a horizontal control strip between them; the header and middle ad slots are hidden.
+  - ≥ 1280px — toolbar buttons show icon + text label; the header ad renders at 468×60; the footer ad renders at 970×90.
+  - 1024–1279px — toolbar buttons collapse to icon-only; the header ad renders at 300×50; the footer ad stays at 970×90.
+  - 768–1023px — panels stack vertically; the middle column becomes a horizontal control strip between them; the middle ad slot is hidden; the header ad renders at 300×50 and the footer ad at 300×50.
+  - < 768px (phones) — the navbar swaps Settings + Help for a single hamburger menu (Home, Theme, Theme color, Configure editor, Keyboard shortcuts), drops the brand text, and tightens to 8px padding; the header ad renders at 300×50 and the footer ad at 300×50; the header ad hides below 360px (it cannot fit), as does the brand logo below 400px.
 
 ## Elevation & Depth
 
@@ -213,7 +214,7 @@ Depth is conveyed with **tonal layers**, HIG-style: `background → surface → 
 
 ## Components
 
-- **navbar:** brand at left (inline squircle mark in the accent color + title-2 weight 600 for the product name "JSON Formatter", secondary color for the "Bit SamurAI" suffix), actions at right: Settings menu and Help. Height 72px, surface background, hairline bottom separator. The optional header ad pill sits centered between brand and actions (surface-secondary, radius md, hairline border, "Ad" badge on its top-right hairline).
+- **navbar:** brand at left (inline squircle mark in the accent color + title-2 weight 600 for the product name "JSON Formatter", secondary color for the "Bit SamurAI" suffix; the text hides below 1024px and the mark below 400px), actions at right: Settings menu and Help — replaced below 768px by a single hamburger menu (Home link, Theme, Theme color, Configure editor, Keyboard shortcuts). Height 72px, surface background, hairline bottom separator (8px padding and 4px gap on phones). The optional header ad pill sits centered between brand and actions (surface-secondary, radius md, hairline border, "Ad" badge on its top-right hairline).
 - **toolbar:** the accent chrome strip atop each editor panel, height 44px, white icons/labels on the accessible chrome fill (`primary-chrome`). Contains New, Open▾, Save▾, Copy▾, Full screen; the document name chip lives in the same strip.
 - **button-primary:** primary-chrome-filled, white text (rounded sm). Used for Compare and any future primary action.
 - **button-ghost:** transparent background (omit the fill), on-surface text; hover tints with `surface-secondary`. Used for menu items and neutral actions.
@@ -221,7 +222,7 @@ Depth is conveyed with **tonal layers**, HIG-style: `background → surface → 
 - **dropdown-menu:** surface background, radius md, shadow (see Elevation), 8px internal padding; items are 44px min-height callout text; destructive items use the `error` color. Variants are expressed as related entries (hover: surface-secondary background).
 - **editor:** flat surface, mono-body typography, no radius. The library's internal menu bar inherits the accent via `--jse-theme-color`; its colors are bridged to these tokens through CSS custom properties.
 - **status-bar:** footnote text on surface-secondary, 24px tall; left side shows caret position ("Line: n Column: m"), right side shows document size.
-- **ad-slot:** ads are chrome, not content: surface background (never a contrasting color), 8px padding, radius md, caption-1 placeholder label in on-surface-tertiary. Every variant reserves its exact final size up front — fixed CSS sizes that never change with ad state — so enabling ads never shifts layout. Placements: `header` (468×60 pill inside the navbar between brand and actions; 300×50 at 1024–1279px; hidden < 1024px; "Ad" badge riding its top-right hairline), `middle` (two 200×200 cards stacked under a "Sponsored" label styled like the control-group labels; the second card hides below ~864px viewport height; hidden < 1024px), `footer` (728×90 under the workspace). Ads must never be placed inside the editor area or disguised as content.
+- **ad-slot:** ads are chrome, not content: surface background (never a contrasting color), 8px padding, radius md, caption-1 placeholder label in on-surface-tertiary. Every variant reserves its exact final size up front — fixed CSS sizes that never change with ad state; each placement renders one ad unit per size and shows exactly one per breakpoint — so enabling ads never shifts layout. Every placement carries the same **"Ad" badge**: an absolutely positioned chip riding the card's top edge (`top: -9px / right: 10px`, hairline border, radius sm, caption-1 in on-surface-tertiary, background matching the surface the card sits on) — it adds no height and never covers ad pixels. Placements: `header` (468×60 pill inside the navbar between brand and actions at ≥ 1280px; 300×50 below 1280px; hidden < 360px where it cannot fit), `middle` (one 250×250 card; hidden < 1024px), `footer` (970×90 under the workspace at ≥ 1024px; 300×50 below). Ads must never be placed inside the editor area or disguised as content.
 - **page-footer:** invisible zero-height block under the workspace; hosts the visually hidden `h1` and product description (`sr-only`) for search engines and screen readers. No visual footprint, non-interactive.
 
 ## Do's and Don'ts

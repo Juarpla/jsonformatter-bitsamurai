@@ -70,7 +70,10 @@ const { label = '', align = 'left', class: className = '' } = Astro.props;
     if (!target) return;
     const menu = target.closest('.menu');
     if (!menu) return;
-    const items = [...menu.querySelectorAll<HTMLButtonElement>('.menu-panel button:not(:disabled)')];
+    // Links (e.g. mobile "Home") cycle through the menu like buttons do.
+    const items = [
+      ...menu.querySelectorAll<HTMLElement>('.menu-panel button:not(:disabled), .menu-panel a[href]'),
+    ];
     if (items.length === 0) return;
 
     // ArrowDown on the trigger opens the menu and moves into it.
@@ -85,7 +88,7 @@ const { label = '', align = 'left', class: className = '' } = Astro.props;
     }
 
     // Arrows/Home/End cycle through the open menu's items.
-    const current = target instanceof HTMLButtonElement ? items.indexOf(target) : -1;
+    const current = target instanceof HTMLElement && items.includes(target) ? items.indexOf(target) : -1;
     if (current === -1) return;
     let next: number | undefined;
     if (event.key === 'ArrowDown') next = current + 1;

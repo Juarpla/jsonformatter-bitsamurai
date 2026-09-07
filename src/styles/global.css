@@ -296,8 +296,14 @@ a {
   max-width: 100%;
 }
 
+/* Real units reserve their exact final size; each placement shows exactly one
+   size unit per viewport and hides the others (see DESIGN.md → Components). */
+.ad-unit.adsbygoogle {
+  display: block;
+}
+
 /* header: pill inside the navbar, centered between brand and menus.
-   Fixed sizes: 468×60 ≥ 1280px, 300×50 at 1024–1279px, hidden < 1024px. */
+   Fixed sizes: 468×60 ≥ 1280px, 300×50 < 1280px (≥360px), hidden < 360px. */
 .ad-header {
   position: relative;
   flex: none;
@@ -306,14 +312,17 @@ a {
   padding: 0;
 }
 
-/* "Ad" badge riding the pill's top-right hairline — never covers ad pixels. */
-.ad-header::after {
+/* "Ad" badge shared by every placement, riding the card's top edge — same
+   format everywhere, absolutely positioned so it never adds height (the
+   bottom half rides the card's edge, the top half floats above it). */
+.ad-slot.ad-header::after,
+.ad-slot.ad-middle::after,
+.ad-slot.ad-footer::after {
   content: 'Ad';
   position: absolute;
   top: -9px;
   right: 10px;
   padding: 0 6px;
-  background: var(--surface-secondary);
   border: 1px solid var(--separator);
   border-radius: var(--radius-sm);
   font-size: 12px; /* caption-1 */
@@ -321,45 +330,98 @@ a {
   color: var(--on-surface-tertiary);
 }
 
-@media (min-width: 1024px) and (max-width: 1279px) {
-  .ad-header .ad-placeholder,
-  .ad-header .adsbygoogle {
-    width: 300px;
-    height: 50px;
+/* The badge's background matches the surface the card sits on, so it appears
+   to cut the card's edge. */
+.ad-slot.ad-header::after {
+  background: var(--surface-secondary);
+}
+
+.ad-slot.ad-middle::after,
+.ad-slot.ad-footer::after {
+  background: var(--background);
+}
+
+.ad-slot.ad-middle,
+.ad-slot.ad-footer {
+  position: relative;
+}
+
+.ad-header .ad-header-468 {
+  width: 468px;
+  height: 60px;
+}
+
+.ad-header .ad-header-300 {
+  width: 300px;
+  height: 50px;
+  display: none;
+}
+
+@media (max-width: 1279px) {
+  .ad-header .ad-header-468 {
+    display: none;
+  }
+  .ad-header .ad-header-300.adsbygoogle {
+    display: block;
+  }
+  .ad-header .ad-header-300.ad-placeholder {
+    display: flex;
   }
 }
 
-/* The middle column widens to fit the two 200×200 middle ad cards
-   (200 + card padding 16 + borders 2 = 218, +16 breathing room) */
-.page:has(.ad-middle) {
-  --middle-width: 234px;
-}
-
-/* middle: two 200×200 cards stacked under the "Sponsored" label */
-.ad-middle .ad-placeholder,
-.ad-middle .adsbygoogle {
-  width: 200px;
-  height: 200px;
-}
-
-/* The second card only fits on tall viewports
-   (navbar 72 + controls 304 + 216 + 8 + 216 + splitter 48 = 864px) */
-@media (max-height: 863px) {
-  .ad-middle-b {
+@media (max-width: 359px) {
+  .ad-header {
     display: none;
   }
 }
 
-/* footer: under the workspace */
+/* The middle column widens to fit the 250×250 middle ad card
+   (250 + card padding 16 + borders 2 = 268, +16 breathing room) */
+.page:has(.ad-middle) {
+  --middle-width: 284px;
+}
+
+/* middle: one 250×250 card under the "Sponsored" label */
+.ad-middle .ad-unit {
+  width: 250px;
+  height: 250px;
+}
+
+/* footer: under the workspace. 970×90 ≥ 1024px, 300×50 below. */
 .ad-footer {
   margin: 8px auto 16px;
   width: fit-content;
   max-width: calc(100% - 16px);
 }
-.ad-footer .ad-placeholder,
-.ad-footer .adsbygoogle {
-  width: 728px;
+
+.ad-footer .ad-footer-970 {
+  width: 970px;
   height: 90px;
+}
+
+.ad-footer .ad-footer-300 {
+  width: 300px;
+  height: 50px;
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .ad-footer .ad-footer-970 {
+    display: none;
+  }
+  .ad-footer .ad-footer-300.adsbygoogle {
+    display: block;
+  }
+  .ad-footer .ad-footer-300.ad-placeholder {
+    display: flex;
+  }
+}
+
+/* On very narrow phones the 300×50 card must fit inside calc(100% - 16px). */
+@media (max-width: 359px) {
+  .ad-footer {
+    padding: 0;
+  }
 }
 
 /* ---------- Bridge tokens into the JSON editor (vanilla-jsoneditor) ---------- */
@@ -415,11 +477,4 @@ a {
 .toast.show {
   opacity: 1;
   transform: translate(-50%, 0);
-}
-
-/* ---------- Responsive ad placement rules (DESIGN.md → Components) ---------- */
-@media (max-width: 1023px) {
-  .ad-header {
-    display: none;
-  }
 }

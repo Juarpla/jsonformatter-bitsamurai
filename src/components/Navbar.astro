@@ -73,6 +73,60 @@ import { ads } from '../config/ads';
       <span class="menu-item help-line"><span>Format</span><kbd>Ctrl+Shift+F</kbd></span>
     </Menu>
   </nav>
+
+  <!-- Phones: one hamburger replaces Settings + Help and adds Home. -->
+  <nav class="navbar-mobile" aria-label="Application">
+    <Menu align="right">
+    <Fragment slot="trigger">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      <span class="sr-only">Menu</span>
+    </Fragment>
+
+    <a class="menu-item" href="/" role="menuitem">
+      <svg class="menu-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg>
+      Home
+    </a>
+    <hr class="menu-separator" />
+
+    <div class="menu-label">Theme</div>
+    <button class="menu-item" type="button" role="menuitemradio" data-theme-choice="system" data-keep-open aria-checked="true">
+      <svg class="menu-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor" stroke="none"></path></svg>
+      Browser default
+    </button>
+    <button class="menu-item" type="button" role="menuitemradio" data-theme-choice="light" data-keep-open aria-checked="false">
+      <svg class="menu-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+      Light
+    </button>
+    <button class="menu-item" type="button" role="menuitemradio" data-theme-choice="dark" data-keep-open aria-checked="false">
+      <svg class="menu-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+      Dark
+    </button>
+
+    <div class="menu-label">Theme color</div>
+    <button class="menu-item" type="button" role="menuitemradio" data-accent-choice="blue" data-keep-open aria-checked="true">
+      <span class="accent-dot" style="--dot: #007aff;"></span>
+      Blue (default)
+    </button>
+    <button class="menu-item" type="button" role="menuitemradio" data-accent-choice="green" data-keep-open aria-checked="false">
+      <span class="accent-dot" style="--dot: #5c7a1e;"></span>
+      Green
+    </button>
+    <button class="menu-item" type="button" role="menuitemradio" data-accent-choice="red" data-keep-open aria-checked="false">
+      <span class="accent-dot" style="--dot: #ff3b30;"></span>
+      Red
+    </button>
+
+    <hr class="menu-separator" />
+    <button class="menu-item" type="button" role="menuitem" disabled title="Coming soon">Configure editor</button>
+
+    <hr class="menu-separator" />
+    <div class="menu-label">Keyboard shortcuts</div>
+    <span class="menu-item help-line"><span>Undo</span><kbd>Ctrl+Z</kbd></span>
+    <span class="menu-item help-line"><span>Redo</span><kbd>Ctrl+Shift+Z</kbd></span>
+    <span class="menu-item help-line"><span>Search</span><kbd>Ctrl+F</kbd></span>
+    <span class="menu-item help-line"><span>Format</span><kbd>Ctrl+Shift+F</kbd></span>
+  </Menu>
+  </nav>
 </header>
 
 <style>
@@ -162,10 +216,47 @@ import { ads } from '../config/ads';
     padding: 2px 6px;
   }
 
-  @media (max-width: 767px) {
-    .nav-label,
+  a.menu-item {
+    text-decoration: none;
+  }
+
+  /* Mobile hamburger: hidden on desktop, replaces the two menus on phones.
+     (The wrapper is Navbar-owned markup — scoped styles do not reach the
+     Menu component's own root element.) */
+  .navbar-mobile {
+    display: none;
+  }
+
+  /* Tablet portrait and phones drop the brand text; the logo stays ≥400px. */
+  @media (max-width: 1023px) {
+    .brand strong,
     .brand span {
       display: none;
+    }
+  }
+
+  @media (max-width: 399px) {
+    .brand-mark {
+      display: none;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .navbar {
+      gap: 4px;
+      padding: 0 8px;
+    }
+
+    .navbar-actions {
+      display: none;
+    }
+
+    .navbar-mobile {
+      display: block;
+    }
+
+    .navbar-mobile .menu-trigger {
+      padding: 0 8px;
     }
   }
 </style>

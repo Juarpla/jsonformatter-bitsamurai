@@ -1,60 +1,62 @@
 ---
-/**
- * Google AdSense slot with layout-safe variants (see DESIGN.md → Components).
- *
- * - Without PUBLIC_ADSENSE_CLIENT: renders a labeled placeholder that reserves
- *   the exact final size of the ad (useful to validate the layout).
- * - With PUBLIC_ADSENSE_CLIENT: renders a manual <ins class="adsbygoogle">
- *   and loads the AdSense library once. Auto Ads are never enabled.
- * - Sizes are fixed (they live in CSS, see global.css) and never change with
- *   ad state: `header` 468×60 (300×50 at 1024–1279px), `middle` 200×200 —
- *   rendered twice via `unit` ('a' top, 'b' bottom; 'b' hides on short
- *   viewports) —, `footer` 728×90.
- */
+// Google AdSense slot with layout-safe size units (see DESIGN.md, "Components").
+//
+// - Without PUBLIC_ADSENSE_CLIENT: renders labeled placeholders that reserve
+//   the exact final size of the ad (useful to validate the layout).
+// - With PUBLIC_ADSENSE_CLIENT: renders a manual ins element per size unit
+//   and loads the AdSense library once. Auto Ads are never enabled.
+// - Sizes are fixed (they live in CSS, see global.css) and never change with
+//   ad state. Each placement renders one unit per size; CSS shows exactly one
+//   per viewport: header 468x60 at 1280px+ / 300x50 below (hidden below 360px),
+//   middle 250x250, footer 970x90 at 1024px+ / 300x50 below.
+//
+// Note: keep frontmatter line comments plain ASCII, without the less-than
+// sign - the Astro compiler (7.3.x) mis-lexes them and loses the
+// frontmatter/template scope wiring (imports stop resolving and every prop
+// falls back to any).
 import { ads, type AdUnit, type AdVariant } from '../config/ads';
 
 interface Props {
   variant: AdVariant;
-  /** Middle variant only: which of the two stacked units. */
-  unit?: 'a' | 'b';
 }
 
-const { variant, unit } = Astro.props;
+const { variant } = Astro.props;
 
-const labels: Record<AdVariant, string> = {
-  header: '468×60 · 300×50 @1024–1279',
-  middle: '200×200',
-  footer: '728×90',
+interface UnitInfo {
+  unit: AdUnit;
+  label: string;
+}
+
+const units: Record<AdVariant, UnitInfo[]> = {
+  header: [
+    { unit: 'header-468', label: '468×60 @1280+' },
+    { unit: 'header-300', label: '300×50 @<1280' },
+  ],
+  middle: [{ unit: 'middle', label: '250×250' }],
+  footer: [
+    { unit: 'footer-970', label: '970×90 @1024+' },
+    { unit: 'footer-300', label: '300×50 @<1024' },
+  ],
 };
 
 const client = ads.client;
 const enabled = ads.placements[variant];
-const adUnit: AdUnit = variant === 'middle' ? `middle-${unit ?? 'a'}` : variant;
-const slotId = ads.slotIds[adUnit];
 ---
 
-{
-  enabled && (
-    <aside
-      class:list={['ad-slot', `ad-${variant}`, unit && `ad-middle-${unit}`]}
-      aria-label="Advertisement"
-    >
-      {client ? (
-        <ins
-          class="adsbygoogle"
-          style="display:block"
-          data-ad-client={client}
-          data-ad-slot={slotId}
-        />
-      ) : (
-        <div class="ad-placeholder">
-          <span>Ad</span>
-          <small>{labels[variant]}</small>
-        </div>
-      )}
-    </aside>
-  )
-}
+{enabled ? (
+  <aside class:list={['ad-slot', `ad-${variant}`]} aria-label="Advertisement">
+    {client
+      ? units[variant].map((entry) => (
+          <ins class:list={['ad-unit', `ad-${entry.unit}`]} data-ad-client={client} data-ad-slot={ads.slotIds[entry.unit]} />
+        ))
+      : units[variant].map((entry) => (
+          <div class:list={['ad-placeholder', 'ad-unit', `ad-${entry.unit}`]}>
+            <span>Ad</span>
+            <small>{entry.label}</small>
+          </div>
+        ))}
+  </aside>
+) : null}
 
 <script>
   // Load the AdSense library once, only when a publisher id is configured.
@@ -71,14 +73,32 @@ const slotId = ads.slotIds[adUnit];
       document.head.appendChild(script);
     }
 
+    // Each size unit is pushed exactly once, and only while it is actually
+    // visible (CSS hides the units that do not match the breakpoint).
     const pushSlots = () => {
       const w = window as unknown as { adsbygoogle?: Record<string, unknown>[] };
       w.adsbygoogle = w.adsbygoogle || [];
-      document.querySelectorAll('.adsbygoogle').forEach(() => {
-        w.adsbygoogle?.push({});
+      document.querySelectorAll<HTMLElement>('.adsbygoogle:not([data-pushed])').forEach((el) => {
+        if (el.offsetWidth > 0) {
+          el.dataset.pushed = 'true';
+          w.adsbygoogle?.push({});
+        }
       });
     };
-    if (document.readyState === 'complete') pushSlots();
-    else window.addEventListener('load', pushSlots, { once: true });
+
+    // Crossing a breakpoint with the window resized may reveal a unit that
+    // has not been pushed yet — retry (debounced) after resizes.
+    let resizeTimer: number | undefined;
+    const schedulePush = () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(pushSlots, 200);
+    };
+    const start = () => {
+      pushSlots();
+      window.addEventListener('resize', schedulePush);
+    };
+
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start, { once: true });
   }
 </script>

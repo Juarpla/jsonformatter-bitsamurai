@@ -88,7 +88,7 @@ Panels are independent editor instances; the middle column moves content between
 | Component | Responsibility |
 | --- | --- |
 | `Layout.astro` | HTML shell; head metadata (canonical, Open Graph, Twitter card, JSON-LD); anti-FOUC theme bootstrap; loads `global.css` |
-| `Navbar.astro` | Brand; Settings menu (Theme: Browser default/Light/Dark; Theme color: Green/Blue/Red); Help |
+| `Navbar.astro` | Brand; Settings menu (Theme: Browser default/Light/Dark; Theme color: Green/Blue/Red); Help; on phones a single hamburger menu adds a Home link and merges both menus |
 | `Workspace.astro` | Grid with two `EditorPanel`s + middle column; splitter; markup + styles only — behavior lives in `src/scripts/workspace.ts` |
 | `EditorPanel.astro` | Document bar (name), app toolbar (New/Open/Save/Copy▾/Full screen), editor host, status bar (Line/Column + size). Mode switching (text/tree/table) uses the editor's built-in menu bar |
 | `Menu.astro` | Generic accessible dropdown (click outside + Esc close, `aria-haspopup`/`aria-expanded`) |
@@ -113,8 +113,8 @@ Panels are independent editor instances; the middle column moves content between
 
 ## Advertising
 
-- Single component: `AdSlot.astro` with variants `header` (468×60 pill inside the navbar, 300×50 at 1024–1279px, hidden < 1024px), `middle` (two stacked 200×200 cards under a "Sponsored" label in the center column; the second hides below ~864px viewport height), `footer` (728×90). Sizes are fixed in CSS and reserved up front to avoid CLS.
-- Optional `data-ad-slot` ids per unit (header, middle-a, middle-b) come from `PUBLIC_ADSENSE_SLOT_*` env vars (see `.env.example`).
+- Single component: `AdSlot.astro` with variants `header` (468×60 pill inside the navbar at ≥ 1280px, 300×50 below 1280px, hidden < 360px where it cannot fit), `middle` (one 250×250 card in the center column; hidden < 1024px), `footer` (970×90 at ≥ 1024px, 300×50 below). Sizes are fixed in CSS and reserved up front to avoid CLS; every placement shares the same "Ad" badge riding the card's top edge (absolutely positioned — adds no height). Each placement renders one `<ins>` per size; CSS shows exactly one per viewport and the push script emits only visible units (re-checked, debounced, after resizes).
+- Optional `data-ad-slot` ids per size unit (header-468, header-300, middle, footer-970, footer-300) come from `PUBLIC_ADSENSE_SLOT_*` env vars (see `.env.example`).
 - Enabled placements and the AdSense client id live in `src/config/ads.ts` (`PUBLIC_ADSENSE_CLIENT` env var; see `.env.example`).
 - Without a client id, labeled placeholders render (useful for layout checks).
 - **Auto Ads stay off**; only manual `<ins class="adsbygoogle">` slots. Ads live in the app chrome, never inside editor panels.
